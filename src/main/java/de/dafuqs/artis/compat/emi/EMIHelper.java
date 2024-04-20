@@ -1,7 +1,7 @@
 package de.dafuqs.artis.compat.emi;
 
 import dev.emi.emi.api.stack.*;
-import net.id.incubus_core.recipe.*;
+import de.dafuqs.matchbooks.recipe.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

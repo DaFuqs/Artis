@@ -1,7 +1,7 @@
 package de.dafuqs.artis.recipe.condenser;
 
 import com.google.gson.*;
-import net.id.incubus_core.recipe.*;
+import de.dafuqs.matchbooks.recipe.*;
 import net.minecraft.item.*;
 import net.minecraft.network.*;
 import net.minecraft.recipe.*;

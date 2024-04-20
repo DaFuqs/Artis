@@ -2,7 +2,7 @@ package de.dafuqs.artis.recipe.crafting;
 
 import com.google.gson.*;
 import de.dafuqs.artis.api.*;
-import net.id.incubus_core.recipe.*;
+import de.dafuqs.matchbooks.recipe.*;
 import net.minecraft.item.*;
 import net.minecraft.network.*;
 import net.minecraft.recipe.*;

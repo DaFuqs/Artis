@@ -7,7 +7,7 @@ import net.fabricmc.loader.api.*;
 import net.minecraft.block.*;
 import net.minecraft.registry.*;
 import net.minecraft.util.*;
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.*;
 
 import java.io.*;

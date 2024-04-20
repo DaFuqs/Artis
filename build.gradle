@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.2-SNAPSHOT'
+	id 'fabric-loom' version '1.5-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -43,7 +43,7 @@ dependencies {
 
 	modImplementation include("io.github.cottonmc:LibGui:${project.libgui_version}")
 	modImplementation include("net.devtech:arrp:${project.aarp_version}")
-	modImplementation include("com.github.devs-immortal:Incubus-Core:${project.incubus_core_version}")
+	modImplementation include("com.github.Noaaan:Matchbooks:${project.matchbooks_version}")
 
 	modCompileOnly "dev.emi:emi-fabric:${emi_version}:api"
 

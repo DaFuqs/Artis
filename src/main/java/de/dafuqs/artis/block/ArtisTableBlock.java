@@ -47,7 +47,7 @@ public class ArtisTableBlock extends Block implements ExtendedScreenHandlerFacto
 	
 	@Override
 	public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-		return new ArtisRecipeProvider(Registries.SCREEN_HANDLER.get(type.getId()), type, syncId, player, ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()));
+		return new ArtisCraftingScreenHandler(Registries.SCREEN_HANDLER.get(type.getId()), type, syncId, player, ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()));
 	}
 	
 	@Override

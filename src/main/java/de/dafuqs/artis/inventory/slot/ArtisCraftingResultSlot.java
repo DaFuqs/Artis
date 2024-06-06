@@ -6,13 +6,13 @@ import io.github.cottonmc.cotton.gui.widget.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.*;
 
-public class ArtisResultSlot extends WItemSlot {
+public class ArtisCraftingResultSlot extends WItemSlot {
 	
 	private final PlayerEntity player;
 	private final ArtisCraftingInventory craftingInventory;
 	private final Inventory inventory;
 	
-	public ArtisResultSlot(PlayerEntity player, ArtisCraftingInventory craftingInventory, Inventory resultInv, int startIndex, int slotsWide, int slotsHigh, boolean big) {
+	public ArtisCraftingResultSlot(PlayerEntity player, ArtisCraftingInventory craftingInventory, Inventory resultInv, int startIndex, int slotsWide, int slotsHigh, boolean big) {
 		super(resultInv, startIndex, slotsWide, slotsHigh, big);
 		this.player = player;
 		this.craftingInventory = craftingInventory;
@@ -21,6 +21,6 @@ public class ArtisResultSlot extends WItemSlot {
 	
 	@Override
 	protected ValidatedSlot createSlotPeer(Inventory inventory, int index, int x, int y) {
-		return new ValidatedArtisResultSlot(player, craftingInventory, this.inventory, index, x, y);
+		return new ValidatedArtisCraftingResultSlot(player, craftingInventory, this.inventory, index, x, y);
 	}
 }

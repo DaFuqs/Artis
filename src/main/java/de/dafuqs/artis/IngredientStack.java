@@ -31,8 +31,9 @@ public record IngredientStack(Ingredient ingredient, int count, ComponentPredica
             IngredientStack::new);
     
     public static final PacketCodec<RegistryByteBuf, Optional<IngredientStack>> OPTIONAL_PACKET_CODEC = PACKET_CODEC.collect(PacketCodecs::optional);
-
-    public IngredientStack(Ingredient ingredient, RegistryEntry<Item> displayItem) {
+	public static final IngredientStack EMPTY = new IngredientStack(Ingredient.EMPTY, Items.AIR.getRegistryEntry());
+ 
+	public IngredientStack(Ingredient ingredient, RegistryEntry<Item> displayItem) {
         this(ingredient, 1, displayItem);
     }
 

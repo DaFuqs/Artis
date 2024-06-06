@@ -7,6 +7,6 @@ import net.minecraft.util.*;
 
 public class ArtisPlugins {
 	
-	public static final CategoryIdentifier<CondenserRecipeDisplay> CONDENSER = CategoryIdentifier.of(new Identifier(Artis.MODID, "condenser"));
+	public static final CategoryIdentifier<CondenserRecipeDisplay> CONDENSER = CategoryIdentifier.of(new Identifier(Artis.MOD_ID, "condenser"));
 	
 }

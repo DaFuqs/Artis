@@ -9,7 +9,7 @@ import net.minecraft.util.*;
 
 public class ArtisItemGroups {
 	
-	public static final Identifier ARTIS_GROUP_ID = new Identifier(Artis.MODID, "group");
+	public static final Identifier ARTIS_GROUP_ID = new Identifier(Artis.MOD_ID, "group");
 	
 	public static final ItemGroup ARTIS_GROUP = FabricItemGroup.builder()
 			.displayName(Text.translatable("itemGroup.artis.group"))

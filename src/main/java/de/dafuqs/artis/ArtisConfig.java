@@ -12,16 +12,17 @@ import org.jetbrains.annotations.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.*;
 
 public class ArtisConfig {
 	
-	public static final Identifier ARTIS_TABLE_BLOCK_TAG_IDENTIFIER = new Identifier(Artis.MODID, "blocks/crafting_tables");
+	public static final Identifier ARTIS_TABLE_BLOCK_TAG_IDENTIFIER = new Identifier(Artis.MOD_ID, "blocks/crafting_tables");
 	
 	public static void loadConfig() {
 		try {
 			File file = FabricLoader.getInstance().getConfigDir().resolve("artis-recrafted.json5").toFile();
 			if (!file.exists()) {
-				Artis.log(Level.WARN, "Config file not found! Generating an empty file.");
+				Artis.LOGGER.warn("Config file not found! Generating an empty file.");
 				file.createNewFile();
 				FileOutputStream out = new FileOutputStream(file, false);
 				out.write(DEFAULT_CONFIG.getBytes());
@@ -34,7 +35,7 @@ public class ArtisConfig {
 			loadEntries(json);
 			
 		} catch (Exception e) {
-			Artis.log(Level.ERROR, "Error loading config: " + e.getMessage());
+			Artis.LOGGER.error("Error loading config: {}", e.getMessage());
 		}
 	}
 	
@@ -43,7 +44,7 @@ public class ArtisConfig {
 		Collections.sort(keys);
 		for (String key : keys) {
 			if (ArtisBlocks.ARTIS_TABLE_TYPES.containsId(new Identifier(key))) {
-				Artis.log(Level.ERROR, "Table type named " + key + " already exists, skipping it...");
+				Artis.LOGGER.error("Table type named {} already exists, skipping it...", key);
 				continue;
 			}
 			JsonElement elem = json.get(key);
@@ -54,11 +55,11 @@ public class ArtisConfig {
 					try {
 						settings = parseSettings(config.get("settings").getAsJsonObject());
 					} catch (Exception e) {
-						Artis.log(Level.ERROR, "Table type named " + key + " has invalid block settings set. Using defaults." + e.getMessage());
-						settings = FabricBlockSettings.copyOf(Blocks.CRAFTING_TABLE);
+						Artis.LOGGER.error("Table type named {} has invalid block settings set. Using defaults.{}", key, e.getMessage());
+						settings = AbstractBlock.Settings.copy(Blocks.CRAFTING_TABLE);
 					}
 				} else {
-					settings = FabricBlockSettings.copyOf(Blocks.CRAFTING_TABLE);
+					settings = AbstractBlock.Settings.copy(Blocks.CRAFTING_TABLE);
 				}
 				ArtisBlocks.registerTable(type, settings);
 			}
@@ -69,34 +70,35 @@ public class ArtisConfig {
 	
 	public static Block.@NotNull Settings parseSettings(com.google.gson.JsonObject json) {
 		if (json == null) {
-			Artis.log(Level.ERROR, "Cannot parse block settings that aren't a json object!");
-			return FabricBlockSettings.copyOf(Blocks.CRAFTING_TABLE);
+			Artis.LOGGER.error("Cannot parse block settings that aren't a json object!");
+			return AbstractBlock.Settings.copy(Blocks.CRAFTING_TABLE);
 		}
-		FabricBlockSettings settings;
+		AbstractBlock.Settings settings;
 		if (json.has("copy")) {
 			String blockSettingsOf = json.get("copy").getAsString();
 			Block block = Registries.BLOCK.get(Identifier.tryParse(blockSettingsOf));
 			if (block != Blocks.AIR) {
-				settings = FabricBlockSettings.copyOf(block);
+				settings = AbstractBlock.Settings.copy(block);
 			} else {
-				Artis.log(Level.ERROR, "Specified Block \"" + blockSettingsOf + "\" does not exist. Falling back to Crafting Table...");
-				settings = FabricBlockSettings.copyOf(Blocks.CRAFTING_TABLE);
+				Artis.LOGGER.error("Specified Block \"{}\" does not exist. Falling back to Crafting Table...", blockSettingsOf);
+				settings = AbstractBlock.Settings.copy(Blocks.CRAFTING_TABLE);
 			}
 		} else {
-			settings = FabricBlockSettings.copyOf(Blocks.CRAFTING_TABLE);
+			settings = AbstractBlock.Settings.copy(Blocks.CRAFTING_TABLE);
 		}
 		
 		if (JsonHelper.getBoolean(json, "requires_tool", false)) {
 			settings.requiresTool();
 		}
-		if (JsonHelper.getBoolean(json,"collidable", false)) {
-			settings.collidable(true);
+		if (!JsonHelper.getBoolean(json,"collidable", false)) {
+			settings.noCollision();
 		}
 		if (JsonHelper.getBoolean(json, "non_opaque", false)) {
 			settings.nonOpaque();
 		}
 		if (json.has("light_level")) {
-			settings.luminance(JsonHelper.getInt(json, "light_level", 0));
+			int lightLevel = JsonHelper.getInt(json, "light_level", 0);
+			settings.luminance(value -> lightLevel);
 		}
 		if (json.has("hardness")) {
 			settings.hardness(JsonHelper.getFloat(json, "hardness", 0));
@@ -120,7 +122,7 @@ public class ArtisConfig {
 		String name;
 		boolean blockEntity;
 		if (!key.contains(":")) {
-			id = new Identifier(Artis.MODID, key);
+			id = new Identifier(Artis.MOD_ID, key);
 			name = JsonHelper.getString(json,  "display_name");
 			
 			blockEntity = JsonHelper.getBoolean(json, "block_entity", false);
@@ -143,16 +145,16 @@ public class ArtisConfig {
 		int width = JsonHelper.getInt(json, "width", 3);
 		int height = JsonHelper.getInt(json, "height", 3);
 		if (width > 7) {
-			Artis.log(Level.WARN, "Only tables up to 7 columns are supported. Anything higher may break visually.");
+			Artis.LOGGER.warn("Only tables up to 7 columns are supported. Anything higher may break visually.");
 			if (width > 9) {
-				Artis.log(Level.ERROR, "Table type named " + key + " has too many columns, clamping it to 9");
+				Artis.LOGGER.error("Table type named {} has too many columns, clamping it to 9", key);
 				width = 9;
 			}
 		}
 		if (height > 7) {
-			Artis.log(Level.WARN, "Only tables up to 7 rows are supported. Anything higher may, and likely will, break visually.");
+			Artis.LOGGER.warn("Only tables up to 7 rows are supported. Anything higher may, and likely will, break visually.");
 			if (height > 9) {
-				Artis.log(Level.ERROR, "Table type named " + key + " has too many rows, clamping it to 9");
+				Artis.LOGGER.error("Table type named {} has too many rows, clamping it to 9", key);
 				height = 9;
 			}
 		}
@@ -168,7 +170,7 @@ public class ArtisConfig {
 				Identifier identifier = Identifier.tryParse(currentString);
 				
 				if (identifier == null) {
-					Artis.log(Level.WARN, "Tag " + currentString + " could not be applied. Valid identifier?");
+					Artis.LOGGER.warn("Tag {} could not be applied. Valid identifier?", currentString);
 				} else {
 					blockTags.add(identifier);
 				}

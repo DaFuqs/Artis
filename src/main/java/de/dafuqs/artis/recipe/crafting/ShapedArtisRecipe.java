@@ -133,9 +133,8 @@ public class ShapedArtisRecipe extends ArtisCraftingRecipeBase {
 		}
 	}
 	
-	
-	public static class Serializer implements RecipeSerializer<ShapedRecipe> {
-		public static final MapCodec<ShapedRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
+	public static class Serializer implements RecipeSerializer<ShapedArtisRecipe> {
+		public static final MapCodec<ShapedArtisRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
 			return instance.group(Codec.STRING.optionalFieldOf("group", "").forGetter((recipe) -> {
 				return recipe.group;
 			}), CraftingRecipeCategory.CODEC.fieldOf("category").orElse(CraftingRecipeCategory.MISC).forGetter((recipe) -> {
@@ -146,31 +145,31 @@ public class ShapedArtisRecipe extends ArtisCraftingRecipeBase {
 				return recipe.result;
 			}), Codec.BOOL.optionalFieldOf("show_notification", true).forGetter((recipe) -> {
 				return recipe.showNotification;
-			})).apply(instance, ShapedRecipe::new);
+			})).apply(instance, ShapedArtisRecipe::new);
 		});
-		public static final PacketCodec<RegistryByteBuf, ShapedRecipe> PACKET_CODEC = PacketCodec.ofStatic(ShapedRecipe.Serializer::write, ShapedRecipe.Serializer::read);
+		public static final PacketCodec<RegistryByteBuf, ShapedArtisRecipe> PACKET_CODEC = PacketCodec.ofStatic(ShapedArtisRecipe.Serializer::write, ShapedArtisRecipe.Serializer::read);
 		
 		public Serializer() {
 		}
 		
-		public MapCodec<ShapedRecipe> codec() {
+		public MapCodec<ShapedArtisRecipe> codec() {
 			return CODEC;
 		}
 		
-		public PacketCodec<RegistryByteBuf, ShapedRecipe> packetCodec() {
+		public PacketCodec<RegistryByteBuf, ShapedArtisRecipe> packetCodec() {
 			return PACKET_CODEC;
 		}
 		
-		private static ShapedRecipe read(RegistryByteBuf buf) {
+		private static ShapedArtisRecipe read(RegistryByteBuf buf) {
 			String string = buf.readString();
-			CraftingRecipeCategory craftingRecipeCategory = (CraftingRecipeCategory)buf.readEnumConstant(CraftingRecipeCategory.class);
-			RawShapedRecipe rawShapedRecipe = (RawShapedRecipe)RawShapedRecipe.PACKET_CODEC.decode(buf);
-			ItemStack itemStack = (ItemStack)ItemStack.PACKET_CODEC.decode(buf);
+			CraftingRecipeCategory craftingRecipeCategory = buf.readEnumConstant(CraftingRecipeCategory.class);
+			RawShapedRecipe rawShapedRecipe = RawShapedRecipe.PACKET_CODEC.decode(buf);
+			ItemStack itemStack = ItemStack.PACKET_CODEC.decode(buf);
 			boolean bl = buf.readBoolean();
-			return new ShapedRecipe(string, craftingRecipeCategory, rawShapedRecipe, itemStack, bl);
+			return new ShapedArtisRecipe(string, craftingRecipeCategory, rawShapedRecipe, itemStack, bl);
 		}
 		
-		private static void write(RegistryByteBuf buf, ShapedRecipe recipe) {
+		private static void write(RegistryByteBuf buf, ShapedArtisRecipe recipe) {
 			buf.writeString(recipe.group);
 			buf.writeEnumConstant(recipe.category);
 			RawShapedRecipe.PACKET_CODEC.encode(buf, recipe.raw);

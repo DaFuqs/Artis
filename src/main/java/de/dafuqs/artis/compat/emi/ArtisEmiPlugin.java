@@ -17,7 +17,7 @@ import java.util.function.*;
 public class ArtisEmiPlugin implements EmiPlugin {
 	
 	public static final Map<ArtisCraftingRecipeType, EmiRecipeCategory> CRAFTING = new HashMap<>();
-	public static final EmiRecipeCategory CONDENSER = new EmiRecipeCategory(new Identifier(Artis.MODID, "condenser"), EmiStack.of(ArtisBlocks.CONDENSER_BLOCK));
+	public static final EmiRecipeCategory CONDENSER = new EmiRecipeCategory(new Identifier(Artis.MOD_ID, "condenser"), EmiStack.of(ArtisBlocks.CONDENSER_BLOCK));
 	
 	@Override
 	public void register(EmiRegistry registry) {

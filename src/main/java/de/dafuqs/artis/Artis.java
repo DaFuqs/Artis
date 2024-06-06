@@ -2,27 +2,15 @@ package de.dafuqs.artis;
 
 import de.dafuqs.artis.event.*;
 import de.dafuqs.artis.inventory.*;
-import de.dafuqs.artis.inventory.crafting.*;
 import de.dafuqs.artis.recipe.*;
 import net.fabricmc.api.*;
-import net.fabricmc.fabric.api.networking.v1.*;
 import net.minecraft.registry.*;
-import net.minecraft.screen.*;
-import net.minecraft.util.*;
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 
 public class Artis implements ModInitializer {
 	
-	public static final String MODID = "artis";
-	
-	private static final Logger LOGGER = LogManager.getLogger();
-	
-	public static final Identifier RECIPE_SYNC_IDENTIFIER = new Identifier(MODID, "sync_recipe");
-	public static final Identifier REQUEST_SYNC_IDENTIFIER = new Identifier(MODID, "request_sync");
-	
-	public static void log(Level logLevel, String message) {
-		LOGGER.log(logLevel, "[Artis-Recrafted] " + message);
-	}
+	public static final String MOD_ID = "artis";
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	
 	@Override
 	public void onInitialize() {
@@ -33,16 +21,6 @@ public class Artis implements ModInitializer {
 		ArtisScreenHandlers.register();
 		
 		Registry.register(Registries.ITEM_GROUP, ArtisItemGroups.ARTIS_GROUP_ID, ArtisItemGroups.ARTIS_GROUP);
-		
-		//seems to be required to not have the recipe vanish when initially opened
-		ServerPlayNetworking.registerGlobalReceiver(Artis.REQUEST_SYNC_IDENTIFIER, (server, player, handler, buf, responseSender) -> {
-			server.execute(() -> {
-				ScreenHandler container = player.currentScreenHandler;
-				if (container instanceof ArtisRecipeProvider) {
-					container.onContentChanged(null);
-				}
-			});
-		});
 	}
 	
 }

@@ -3,6 +3,7 @@ package de.dafuqs.artis.recipe.condenser;
 import de.dafuqs.artis.*;
 import de.dafuqs.artis.inventory.variant_backed.*;
 import de.dafuqs.artis.recipe.*;
+import dev.architectury.fluid.*;
 import net.fabricmc.fabric.api.transfer.v1.item.*;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.*;
 import net.minecraft.inventory.*;
@@ -106,5 +107,9 @@ public class CondenserRecipe implements Recipe<Inventory> {
 	
 	public Identifier getId() {
 		return this.id;
+	}
+	
+	public ItemStack getRawOutput() {
+		return this.output;
 	}
 }

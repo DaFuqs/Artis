@@ -9,7 +9,7 @@ import net.minecraft.util.*;
 
 public class CondenserScreen extends HandledScreen<CondenserScreenHandler> {
 	
-	public static final Identifier BACKGROUND = new Identifier(Artis.MODID, "textures/gui/condenser.png");
+	public static final Identifier BACKGROUND = new Identifier(Artis.MOD_ID, "textures/gui/condenser.png");
 	
 	public CondenserScreen(CondenserScreenHandler handler, PlayerInventory playerInventory, Text title) {
 		super(handler, playerInventory, title);

@@ -1,14 +1,21 @@
 package de.dafuqs.artis.recipe.crafting;
 
+import com.mojang.serialization.*;
+import com.mojang.serialization.codecs.*;
 import de.dafuqs.artis.*;
 import de.dafuqs.artis.api.*;
 import de.dafuqs.artis.inventory.crafting.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.item.*;
+import net.minecraft.network.*;
+import net.minecraft.network.codec.*;
 import net.minecraft.recipe.*;
+import net.minecraft.recipe.book.*;
 import net.minecraft.util.*;
 import net.minecraft.util.collection.*;
 import net.minecraft.world.*;
+
+import java.util.*;
 
 public class ShapelessArtisRecipe extends ArtisCraftingRecipeBase {
 	
@@ -72,6 +79,53 @@ public class ShapelessArtisRecipe extends ArtisCraftingRecipeBase {
 					break;
 				}
 			}
+		}
+	}
+	
+	public static class Serializer implements RecipeSerializer<ShapelessArtisRecipe> {
+		private static final MapCodec<ShapelessArtisRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(Codec.STRING.optionalFieldOf("group", "").forGetter((recipe) -> recipe.group), CraftingRecipeCategory.CODEC.fieldOf("category").orElse(CraftingRecipeCategory.MISC).forGetter((recipe) -> recipe.category), ItemStack.VALIDATED_CODEC.fieldOf("result").forGetter((recipe) -> recipe.result), Ingredient.DISALLOW_EMPTY_CODEC.listOf().fieldOf("ingredients").flatXmap((ingredients) -> {
+			Ingredient[] ingredients2 = ingredients.stream().filter((ingredient) -> !ingredient.isEmpty()).toArray(Ingredient[]::new);
+			if (ingredients2.length == 0) {
+				return DataResult.error(() -> "No ingredients for shapeless recipe");
+			} else {
+				return ingredients2.length > 9 ? DataResult.error(() -> "Too many ingredients for shapeless recipe") : DataResult.success(DefaultedList.copyOf(Ingredient.EMPTY, ingredients2));
+			}
+		}, DataResult::success).forGetter((recipe) -> recipe.ingredients)).apply(instance, ShapelessArtisRecipe::new));
+		public static final PacketCodec<RegistryByteBuf, ShapelessArtisRecipe> PACKET_CODEC = PacketCodec.ofStatic(ShapelessArtisRecipe.Serializer::write, ShapelessArtisRecipe.Serializer::read);
+		
+		public Serializer() {
+		}
+		
+		public MapCodec<ShapelessArtisRecipe> codec() {
+			return CODEC;
+		}
+		
+		public PacketCodec<RegistryByteBuf, ShapelessArtisRecipe> packetCodec() {
+			return PACKET_CODEC;
+		}
+		
+		private static ShapelessArtisRecipe read(RegistryByteBuf buf) {
+			String string = buf.readString();
+			CraftingRecipeCategory craftingRecipeCategory = buf.readEnumConstant(CraftingRecipeCategory.class);
+			int i = buf.readVarInt();
+			DefaultedList<Ingredient> defaultedList = DefaultedList.ofSize(i, Ingredient.EMPTY);
+			defaultedList.replaceAll((empty) -> Ingredient.PACKET_CODEC.decode(buf));
+			ItemStack itemStack = ItemStack.PACKET_CODEC.decode(buf);
+			return new ShapelessArtisRecipe(string, craftingRecipeCategory, itemStack, defaultedList);
+		}
+		
+		private static void write(RegistryByteBuf buf, ShapelessArtisRecipe recipe) {
+			buf.writeString(recipe.group);
+			buf.writeEnumConstant(recipe.category);
+			buf.writeVarInt(recipe.ingredients.size());
+			Iterator var2 = recipe.ingredients.iterator();
+			
+			while(var2.hasNext()) {
+				Ingredient ingredient = (Ingredient)var2.next();
+				Ingredient.PACKET_CODEC.encode(buf, ingredient);
+			}
+			
+			ItemStack.PACKET_CODEC.encode(buf, recipe.result);
 		}
 	}
 	

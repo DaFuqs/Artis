@@ -1,6 +1,8 @@
 package de.dafuqs.artis.compat.rei;
 
 import de.dafuqs.artis.*;
+import de.dafuqs.artis.api.*;
+import me.shedaniel.math.*;
 import me.shedaniel.rei.api.common.entry.*;
 import me.shedaniel.rei.api.common.util.*;
 import org.jetbrains.annotations.*;
@@ -16,6 +18,11 @@ public class REIHelper {
 	
 	public static EntryIngredient ofIngredientStack(@NotNull IngredientStack ingredientStack) {
 		return EntryIngredients.ofItemStacks(ingredientStack.getStacks());
+	}
+	
+	public Rectangle getClickArea(ArtisCraftingRecipeType type) {
+		ContainerLayout containerLayout = new ContainerLayout(type.getWidth(), type.getHeight(), type.hasCatalystSlot());
+		return new Rectangle(containerLayout.getArrowX() + 8, containerLayout.getArrowY() + 2, 21, 16);
 	}
 	
 }

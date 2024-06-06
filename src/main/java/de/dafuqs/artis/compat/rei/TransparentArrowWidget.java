@@ -12,7 +12,7 @@ import java.util.*;
 
 public class TransparentArrowWidget extends Arrow {
 	
-	private static final Identifier TEXTURE = new Identifier(Artis.MODID, "textures/gui/arrow.png");
+	private static final Identifier TEXTURE = new Identifier(Artis.MOD_ID, "textures/gui/arrow.png");
 	
 	@NotNull
 	private final Rectangle bounds;

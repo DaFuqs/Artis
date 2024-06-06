@@ -86,25 +86,25 @@ public class ArtisRecipeCategory implements DisplayCategory<ArtisRecipeDisplay> 
 		widgets.addAll(slots);
 		
 		// arrow
-		widgets.add(TransparentArrowWidget.create(new Point(slots.get(slots.size() - 1).getX() + 24, startPoint.y + (displayHeight / 2) - 23)).disableAnimation());
+		widgets.add(TransparentArrowWidget.create(new Point(slots.getLast().getX() + 24, startPoint.y + (displayHeight / 2) - 23)).disableAnimation());
 		
 		// output
 		List<EntryIngredient> output = recipeDisplay.getOutputEntries();
-		widgets.add(ColorableEntryWidget.create(slots.get(slots.size() - 1).getX() + 55, startPoint.y + (displayHeight / 2) - 22, color).markOutput().entries(output.get(0)));
+		widgets.add(ColorableEntryWidget.create(slots.getLast().getX() + 55, startPoint.y + (displayHeight / 2) - 22, color).markOutput().entries(output.getFirst()));
 		
 		// catalyst
 		EntryIngredient catalyst = recipeDisplay.getCatalyst();
 		if (artisCraftingRecipeType.hasCatalystSlot() && !catalyst.isEmpty()) {
-			widgets.add(ColorableEntryWidget.create(slots.get(slots.size() - 1).getX() + 28, startPoint.y + (displayHeight / 2) - 4, color).entries(catalyst));
+			widgets.add(ColorableEntryWidget.create(slots.getLast().getX() + 28, startPoint.y + (displayHeight / 2) - 4, color).entries(catalyst));
 			
-			if(recipeDisplay.getCatalystCost() > 0) {
+			if (recipeDisplay.getCatalystCost() > 0) {
 				widgets.add(Widgets.createLabel(
-						new Point(35 + slots.get(slots.size() - 1).getX(), 15 + startPoint.y + (displayHeight / 2)),
+						new Point(35 + slots.getLast().getX(), 15 + startPoint.y + (displayHeight / 2)),
 						Text.literal(Formatting.RED + "-" + recipeDisplay.getCatalystCost())
 				).centered());
 			} else {
 				widgets.add(Widgets.createLabel(
-						new Point(18 + slots.get(slots.size() - 1).getX(), 15 + startPoint.y + (displayHeight / 2)),
+						new Point(18 + slots.getLast().getX(), 15 + startPoint.y + (displayHeight / 2)),
 						Text.translatable("artis.recipe.tooltip.not_consumed")
 				).leftAligned());
 			}

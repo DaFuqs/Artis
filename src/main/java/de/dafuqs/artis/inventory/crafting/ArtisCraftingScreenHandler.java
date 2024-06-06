@@ -1,6 +1,5 @@
 package de.dafuqs.artis.inventory.crafting;
 
-import com.mojang.datafixers.util.Pair;
 import de.dafuqs.artis.*;
 import de.dafuqs.artis.api.*;
 import de.dafuqs.artis.inventory.slot.*;
@@ -9,8 +8,6 @@ import io.github.cottonmc.cotton.gui.client.*;
 import io.github.cottonmc.cotton.gui.widget.*;
 import io.github.cottonmc.cotton.gui.widget.data.*;
 import net.fabricmc.api.*;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.*;
 import net.minecraft.item.*;
@@ -25,7 +22,7 @@ import org.jetbrains.annotations.*;
 
 import java.util.*;
 
-public class ArtisRecipeProvider extends SyncedGuiDescription implements RecipeProvider {
+public class ArtisCraftingScreenHandler extends SyncedGuiDescription implements RecipeProvider {
 	private final ArtisCraftingRecipeType tableType;
 	private final PlayerEntity player;
 	private final ArtisCraftingInventory craftInv;
@@ -34,15 +31,24 @@ public class ArtisRecipeProvider extends SyncedGuiDescription implements RecipeP
 	
 	private final WPlainPanel mainPanel;
 	private final WItemSlot craftingGrid;
-	private final ArtisResultSlot resultSlot;
+	private final ArtisCraftingResultSlot resultSlot;
 	private final WPlayerInvPanel playerInv;
 	private WItemSlot catalystSlot;
 	
-	public ArtisRecipeProvider(ScreenHandlerType type, ArtisCraftingRecipeType tableType, int syncId, PlayerEntity player, ScreenHandlerContext context) {
-		super(type, syncId, player.getInventory(), getBlockInventory(context), getBlockPropertyDelegate(context));
+	//This constructor gets called on the client when the server wants it to open the screenHandler,
+	//The client will call the other constructor with an empty Inventory and the screenHandler will automatically
+	//sync this empty inventory with the inventory on the server.
+	public ArtisCraftingScreenHandler(int syncId, PlayerInventory playerInventory) {
+		this(syncId, playerInventory, new SimpleInventory(9));
+	}
+	
+	//This constructor gets called from the BlockEntity on the server without calling the other constructor first, the server knows the inventory of the container
+	//and can therefore directly provide it as an argument. This inventory will then be synced to the client.
+	public ArtisCraftingScreenHandler(ArtisCraftingRecipeType tableType, int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) {
+		super(tableType.getScreenHandlerType(), syncId, playerInventory, getBlockInventory(context), getBlockPropertyDelegate(context));
 		
 		this.tableType = tableType;
-		this.player = player;
+		this.player = playerInventory.player;
 		this.context = context;
 		
 		this.resultInv = new CraftingResultInventory();
@@ -57,7 +63,7 @@ public class ArtisRecipeProvider extends SyncedGuiDescription implements RecipeP
 		mainPanel = new WPlainPanel();
 		setRootPanel(mainPanel);
 		
-		this.resultSlot = new ArtisResultSlot(player, craftInv, resultInv, 0, 1, 1, true);
+		this.resultSlot = new ArtisCraftingResultSlot(player, craftInv, resultInv, 0, 1, 1, true);
 		int offsetX = 8;
 		mainPanel.add(resultSlot, layout.getResultX() + offsetX, layout.getResultY() + 5);
 		
@@ -78,7 +84,7 @@ public class ArtisRecipeProvider extends SyncedGuiDescription implements RecipeP
 		WLabel label = new WLabel(tableType.getName(), 0x404040);
 		mainPanel.add(label, 8, 6);
 		
-		WSprite arrow = new WSprite(new Identifier(Artis.MODID, "textures/gui/translucent_arrow.png"));
+		WSprite arrow = new WSprite(new Identifier(Artis.MOD_ID, "textures/gui/translucent_arrow.png"));
 		mainPanel.add(arrow, layout.getArrowX() + offsetX, layout.getArrowY() + 5, 22, 15);
 		
 		mainPanel.validate(this);
@@ -275,7 +281,7 @@ public class ArtisRecipeProvider extends SyncedGuiDescription implements RecipeP
 		return slot.inventory != this.resultInv && super.canInsertIntoSlot(stack, slot);
 	}
 	
-	public static ItemStack handleShiftCraft(PlayerEntity player, ArtisRecipeProvider container, Slot resultSlot, ArtisCraftingInventory input, CraftingResultInventory craftResult, int outStart, int outEnd) {
+	public static ItemStack handleShiftCraft(PlayerEntity player, ArtisCraftingScreenHandler container, Slot resultSlot, ArtisCraftingInventory input, CraftingResultInventory craftResult, int outStart, int outEnd) {
 		ItemStack outputCopy = ItemStack.EMPTY;
 		if (resultSlot != null && resultSlot.hasStack()) {
 			Recipe<?> recipe = findRecipe(container.tableType, input, player.getWorld(), craftResult.getLastRecipe());
@@ -283,7 +289,7 @@ public class ArtisRecipeProvider extends SyncedGuiDescription implements RecipeP
 				ItemStack recipeOutput = resultSlot.getStack().copy();
 				outputCopy = recipeOutput.copy();
 				
-				recipeOutput.getItem().onCraft(recipeOutput, player.getWorld(), player);
+				recipeOutput.getItem().onCraftByPlayer(recipeOutput, player.getWorld(), player);
 				
 				if (!player.getWorld().isClient && !container.insertItem(recipeOutput, outStart, outEnd, true)) {
 					return ItemStack.EMPTY;

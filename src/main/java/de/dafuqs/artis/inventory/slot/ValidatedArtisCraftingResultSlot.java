@@ -7,15 +7,14 @@ import net.minecraft.entity.player.*;
 import net.minecraft.inventory.*;
 import net.minecraft.item.*;
 import net.minecraft.recipe.*;
-import org.jetbrains.annotations.*;
 
-public class ValidatedArtisResultSlot extends ValidatedSlot {
+public class ValidatedArtisCraftingResultSlot extends ValidatedSlot {
 	
 	private final ArtisCraftingInventory craftingInv;
 	private final PlayerEntity player;
 	private int amount;
 	
-	public ValidatedArtisResultSlot(PlayerEntity player, ArtisCraftingInventory inventory, Inventory inventoryIn, int index, int xPosition, int yPosition) {
+	public ValidatedArtisCraftingResultSlot(PlayerEntity player, ArtisCraftingInventory inventory, Inventory inventoryIn, int index, int xPosition, int yPosition) {
 		super(inventoryIn, index, xPosition, yPosition);
 		this.player = player;
 		this.craftingInv = inventory;

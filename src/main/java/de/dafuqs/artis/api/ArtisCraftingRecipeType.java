@@ -2,11 +2,14 @@ package de.dafuqs.artis.api;
 
 import de.dafuqs.artis.*;
 import de.dafuqs.artis.compat.rei.crafting.*;
+import de.dafuqs.artis.inventory.crafting.*;
 import de.dafuqs.artis.recipe.crafting.*;
 import me.shedaniel.math.*;
 import me.shedaniel.rei.api.common.category.*;
+import net.fabricmc.fabric.api.screenhandler.v1.*;
 import net.minecraft.recipe.*;
 import net.minecraft.registry.*;
+import net.minecraft.screen.*;
 import net.minecraft.text.*;
 import net.minecraft.util.*;
 import org.jetbrains.annotations.*;
@@ -16,17 +19,18 @@ import java.util.*;
 public class ArtisCraftingRecipeType implements RecipeType<ArtisCraftingRecipe> {
 	
 	private final Identifier id;
-	private String name;
+	private final String name;
 	private final int width;
 	private final int height;
-	private int color = 0;
 	private final boolean blockEntity;
 	private final boolean catalystSlot;
 	private final boolean includeNormalRecipes;
-	private boolean hasColor = false;
 	private final RecipeSerializer<ShapedArtisRecipe> shaped;
 	private final RecipeSerializer<ShapelessArtisRecipe> shapeless;
 	private final List<Identifier> blockTags;
+	private final ScreenHandlerType<ArtisCraftingScreenHandler> screenHandlerType;
+	private int color = 0;
+	private boolean hasColor = false;
 	
 	public ArtisCraftingRecipeType(Identifier id, String name, int width, int height, boolean blockEntity, boolean catalystSlot, boolean includeNormalRecipes, int color, List<Identifier> blockTags) {
 		this(id, name, width, height, blockEntity, catalystSlot, includeNormalRecipes, blockTags);
@@ -44,9 +48,10 @@ public class ArtisCraftingRecipeType implements RecipeType<ArtisCraftingRecipe> 
 		this.includeNormalRecipes = includeNormalRecipes;
 		Identifier shapedId = new Identifier(id.getNamespace(), id.getPath() + "_shaped");
 		Identifier shapelessId = new Identifier(id.getNamespace(), id.getPath() + "_shapeless");
-		this.shaped = Registry.register(Registries.RECIPE_SERIALIZER, shapedId, new ShapedArtisSerializer(this));
-		this.shapeless = Registry.register(Registries.RECIPE_SERIALIZER, shapelessId, new ShapelessArtisSerializer(this));
+		this.shaped = Registry.register(Registries.RECIPE_SERIALIZER, shapedId, new ShapedArtisRecipe.Serializer());
+		this.shapeless = Registry.register(Registries.RECIPE_SERIALIZER, shapelessId, new ShapelessArtisRecipe.Serializer());
 		this.blockTags = blockTags;
+		this.screenHandlerType = Registry.register(Registries.SCREEN_HANDLER, id, ArtisCraftingScreenHandler::new);
 	}
 	
 	public Identifier getId() {
@@ -61,6 +66,10 @@ public class ArtisCraftingRecipeType implements RecipeType<ArtisCraftingRecipe> 
 		return height;
 	}
 	
+	public ScreenHandlerType<ArtisCraftingScreenHandler> getScreenHandlerType() {
+		return this.screenHandlerType;
+	}
+	
 	public boolean hasBlockEntity() {
 		return blockEntity;
 	}
@@ -71,6 +80,17 @@ public class ArtisCraftingRecipeType implements RecipeType<ArtisCraftingRecipe> 
 	
 	public boolean shouldIncludeNormalRecipes() {
 		return includeNormalRecipes;
+	}
+	
+	public int getCatalystSlotIndex() {
+		if(hasCatalystSlot()) {
+			return getWidth() * getHeight() + 1;
+		}
+		return -1;
+	}
+	
+	public int getOutputSlotIndex() {
+		return getWidth() * getHeight() + (hasCatalystSlot() ? 1 : 0) + 1;
 	}
 	
 	public boolean hasColor() {
@@ -89,11 +109,6 @@ public class ArtisCraftingRecipeType implements RecipeType<ArtisCraftingRecipe> 
 		return CategoryIdentifier.of(id);
 	}
 	
-	public Rectangle getREIClickArea() {
-		ContainerLayout containerLayout = new ContainerLayout(getWidth(), getHeight(), hasCatalystSlot());
-		return new Rectangle(containerLayout.getArrowX() + 8, containerLayout.getArrowY() + 2, 21, 16);
-	}
-	
 	public String getRawName() {
 		return this.name;
 	}
@@ -107,7 +122,7 @@ public class ArtisCraftingRecipeType implements RecipeType<ArtisCraftingRecipe> 
 	}
 	
 	public String getTranslationString() {
-		return "block." + Artis.MODID + "." + getTableIDPath();
+		return "block." + Artis.MOD_ID + "." + getTableIDPath();
 	}
 	
 	public String getREITranslationString() {

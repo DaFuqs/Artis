@@ -1,5 +1,6 @@
 package de.dafuqs.artis.inventory.crafting;
 
+import de.dafuqs.artis.api.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.*;
 import net.minecraft.item.*;
@@ -12,17 +13,17 @@ public class ArtisCraftingInventory extends CraftingInventory {
 	
 	private final CraftingInventory craftingInventory;
 	private final DefaultedList<ItemStack> catalystInventory;
-	private final ArtisRecipeProvider artisRecipeProvider;
+	private final ArtisCraftingScreenHandler artisCraftingScreenHandler;
 	
 	private final int catalystSlotID;
 	
-	public ArtisCraftingInventory(ArtisRecipeProvider artisRecipeProvider, int width, int height) {
-		super(artisRecipeProvider, width, height);
+	public ArtisCraftingInventory(ArtisCraftingScreenHandler artisCraftingScreenHandler, int width, int height) {
+		super(artisCraftingScreenHandler, width, height);
 		this.catalystSlotID = width * height;
 		
-		this.craftingInventory = new CraftingInventory(artisRecipeProvider, width, height);
+		this.craftingInventory = new CraftingInventory(artisCraftingScreenHandler, width, height);
 		this.catalystInventory = DefaultedList.ofSize(1, ItemStack.EMPTY);
-		this.artisRecipeProvider = artisRecipeProvider;
+		this.artisCraftingScreenHandler = artisCraftingScreenHandler;
 	}
 	
 	@Override
@@ -75,7 +76,7 @@ public class ArtisCraftingInventory extends CraftingInventory {
 	}
 	
 	public void onContentChanged() {
-		this.artisRecipeProvider.onContentChanged(this);
+		this.artisCraftingScreenHandler.onContentChanged(this);
 	}
 	
 	@Override
@@ -93,25 +94,25 @@ public class ArtisCraftingInventory extends CraftingInventory {
 		return getStack(getWidth() * getHeight());
 	}
 	
-	public RecipeType getType() {
-		Optional opt = getPlayer().getEntityWorld().getRecipeManager().getFirstMatch(artisRecipeProvider.getArtisCraftingRecipeType(), artisRecipeProvider.getCraftInv(), getPlayer().getEntityWorld());
-		if (opt.isPresent()) {
-			return artisRecipeProvider.getArtisCraftingRecipeType();
+	public RecipeType<?> getType() {
+		Optional<RecipeEntry<ArtisCraftingRecipe>> optionalRecipe = getPlayer().getEntityWorld().getRecipeManager().getFirstMatch(artisCraftingScreenHandler.getArtisCraftingRecipeType(), artisCraftingScreenHandler.getCraftInv(), getPlayer().getEntityWorld());
+		if (optionalRecipe.isPresent()) {
+			return artisCraftingScreenHandler.getArtisCraftingRecipeType();
 		}
 		
-		Optional<CraftingRecipe> optCrafting = getPlayer().getEntityWorld().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, artisRecipeProvider.getCraftInv(), getPlayer().getEntityWorld());
-		if (optCrafting.isPresent()) {
+		Optional<CraftingRecipe> optionalCraftingRecipe = getPlayer().getEntityWorld().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, artisCraftingScreenHandler.getCraftInv(), getPlayer().getEntityWorld());
+		if (optionalCraftingRecipe.isPresent()) {
 			return RecipeType.CRAFTING;
 		}
-		return artisRecipeProvider.getArtisCraftingRecipeType();
+		return artisCraftingScreenHandler.getArtisCraftingRecipeType();
 	}
 	
 	public boolean shouldCompareCatalyst() {
-		return artisRecipeProvider.getArtisCraftingRecipeType().hasCatalystSlot();
+		return artisCraftingScreenHandler.getArtisCraftingRecipeType().hasCatalystSlot();
 	}
 	
 	public PlayerEntity getPlayer() {
-		return artisRecipeProvider.getPlayer();
+		return artisCraftingScreenHandler.getPlayer();
 	}
 	
 	public RecipeInputInventory getCraftingInventory() {

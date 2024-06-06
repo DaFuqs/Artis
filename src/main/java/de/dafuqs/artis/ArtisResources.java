@@ -47,14 +47,14 @@ public class ArtisResources {
 		}
 		
 		// block and item models
-		JBlockModel blockModel = JState.model(new Identifier(Artis.MODID, "block/table" + (artisCraftingRecipeType.hasColor() ? "_overlay" : "")));
-		JModel model = JModel.model(new Identifier(Artis.MODID, "block/table" + (artisCraftingRecipeType.hasColor() ? "_overlay" : "")));
-		RESOURCE_PACK.addBlockState(JState.state(JState.variant(blockModel)), new Identifier(Artis.MODID, artisCraftingRecipeType.getTableIDPath()));
-		RESOURCE_PACK.addModel(model, new Identifier(Artis.MODID, "item/" + artisCraftingRecipeType.getTableIDPath()));
+		JBlockModel blockModel = JState.model(new Identifier(Artis.MOD_ID, "block/table" + (artisCraftingRecipeType.hasColor() ? "_overlay" : "")));
+		JModel model = JModel.model(new Identifier(Artis.MOD_ID, "block/table" + (artisCraftingRecipeType.hasColor() ? "_overlay" : "")));
+		RESOURCE_PACK.addBlockState(JState.state(JState.variant(blockModel)), new Identifier(Artis.MOD_ID, artisCraftingRecipeType.getTableIDPath()));
+		RESOURCE_PACK.addModel(model, new Identifier(Artis.MOD_ID, "item/" + artisCraftingRecipeType.getTableIDPath()));
 	}
 	
 	public static void registerPack() {
-		RESOURCE_PACK.addLang(new Identifier(Artis.MODID, "en_us"), translations);
+		RESOURCE_PACK.addLang(new Identifier(Artis.MOD_ID, "en_us"), translations);
 		for (Map.Entry<Identifier, JTag> tags : blockTags.entrySet()) {
 			RESOURCE_PACK.addTag(tags.getKey(), tags.getValue());
 		}

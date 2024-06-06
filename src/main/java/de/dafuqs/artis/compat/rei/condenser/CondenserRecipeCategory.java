@@ -69,8 +69,8 @@ public class CondenserRecipeCategory implements DisplayCategory<CondenserRecipeD
 		widgets.add(Widgets.createLabel(new Point(startPoint.x - 26, startPoint.y + 38), tooltipText).leftAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
 		
 		widgets.add(Widgets.createArrow(new Point(startPoint.x + 24, startPoint.y + 8)).animationDurationTicks(display.timeTicks));
-		widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 9)).entries(display.getOutputEntries().get(0)).disableBackground().markOutput());
-		widgets.add(Widgets.createSlot(new Point(startPoint.x + 1, startPoint.y + 1)).entries(display.getInputEntries().get(0)).markInput());
+		widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 9)).entries(display.getOutputEntries().getFirst()).disableBackground().markOutput());
+		widgets.add(Widgets.createSlot(new Point(startPoint.x + 1, startPoint.y + 1)).entries(display.getInputEntries().getFirst()).markInput());
 		
 		return widgets;
 	}

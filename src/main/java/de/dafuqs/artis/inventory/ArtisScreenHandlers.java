@@ -6,7 +6,6 @@ import de.dafuqs.artis.inventory.condenser.*;
 import de.dafuqs.artis.inventory.crafting.*;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.*;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
-import net.fabricmc.fabric.api.client.screenhandler.v1.*;
 import net.fabricmc.fabric.api.screenhandler.v1.*;
 import net.minecraft.client.gui.screen.ingame.*;
 import net.minecraft.client.render.*;

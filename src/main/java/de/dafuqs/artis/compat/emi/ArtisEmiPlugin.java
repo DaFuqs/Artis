@@ -60,8 +60,8 @@ public class ArtisEmiPlugin implements EmiPlugin {
 	}
 
 	public <C extends Inventory, T extends Recipe<C>> void addAll(EmiRegistry registry, RecipeType<T> type, Function<T, EmiRecipe> constructor) {
-		for (T recipe : registry.getRecipeManager().listAllOfType(type)) {
-			registry.addRecipe(constructor.apply(recipe));
+		for (RecipeEntry<T> recipe : registry.getRecipeManager().listAllOfType(type)) {
+			registry.addRecipe(constructor.apply(recipe.value()));
 		}
 	}
 	

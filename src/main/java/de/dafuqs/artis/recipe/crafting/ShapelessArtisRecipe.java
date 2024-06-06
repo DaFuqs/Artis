@@ -1,8 +1,8 @@
 package de.dafuqs.artis.recipe.crafting;
 
+import de.dafuqs.artis.*;
 import de.dafuqs.artis.api.*;
 import de.dafuqs.artis.inventory.crafting.*;
-import de.dafuqs.matchbooks.recipe.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.item.*;
 import net.minecraft.recipe.*;
@@ -61,9 +61,9 @@ public class ShapelessArtisRecipe extends ArtisCraftingRecipeBase {
 		for (IngredientStack ingredientStack : this.ingredientStacks) {
 			for (int slot = 0; slot < inventory.size(); slot++) {
 				ItemStack slotStack = inventory.getStack(slot);
-				if (ingredientStack.test(slotStack)) {
+				if (ingredientStack.matches(slotStack)) {
 					ItemStack remainder = slotStack.getRecipeRemainder();
-					slotStack.decrement(ingredientStack.getCount());
+					slotStack.decrement(ingredientStack.count());
 					if (slotStack.isEmpty()) {
 						inventory.setStack(slot, remainder);
 					} else {

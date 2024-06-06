@@ -64,25 +64,6 @@ public class REIClientIntegration implements REIClientPlugin {
 		}
 		
 		registry.registerRecipeFiller(CondenserRecipe.class, ArtisRecipeTypes.CONDENSER, CondenserRecipeDisplay::new);
-        
-        /*registry.registerVisibilityPredicate(new DisplayVisibilityPredicate() {
-            @Override
-            public EventResult handleDisplay(DisplayCategory<?> category, Display display) {
-                if (display.getDisplayLocation().isPresent() && MinecraftClient.getInstance().world.getRecipeManager().get(display.getDisplayLocation().get()).isPresent()) {
-                    Recipe recipe = MinecraftClient.getInstance().world.getRecipeManager().get(display.getDisplayLocation().get()).get();
-        
-                    if (recipe.getType() instanceof ArtisTableType && display.getCategoryIdentifier().equals(DefaultPlugin.CRAFTING)) {
-                        return EventResult.interruptTrue();
-                    }
-                }
-                return EventResult.interruptFalse();
-            }
-    
-            @Override
-            public double getPriority() {
-                return 10;
-            }
-        });*/
 	}
 	
 	/**
@@ -95,7 +76,6 @@ public class REIClientIntegration implements REIClientPlugin {
 		//for (ArtisTableType type : Artis.ARTIS_TABLE_TYPES) {
 		//registry.registerContainerClickArea(type.getREIClickArea(), ArtisCraftingScreen.class, type.getCategoryIdentifier(), BuiltinPlugin.CRAFTING);
 		//}
-		
 		registry.registerContainerClickArea(new Rectangle(81, 34, 21, 16), CondenserScreen.class, ArtisPlugins.CONDENSER);
 	}
 	

@@ -253,7 +253,7 @@ public class CondenserBlockEntity extends BlockEntity implements NamedScreenHand
 	private static boolean craftRecipe(CondenserRecipe recipe, CondenserBlockEntity condenser, Inventory inventory) {
 		if (canAcceptRecipeOutput(condenser.world.getRegistryManager(), recipe, inventory)) {
 			ItemVariant output = condenser.output.variant;
-			ItemStack recipeOutput = recipe.getOutput(condenser.world.getRegistryManager());
+			ItemStack recipeOutput = recipe.craft(inventory, condenser.world.getRegistryManager());
 			if (output.isBlank()) {
 				condenser.output.variant = ItemVariant.of(recipeOutput);
 				condenser.output.amount = recipeOutput.getCount();
@@ -261,7 +261,7 @@ public class CondenserBlockEntity extends BlockEntity implements NamedScreenHand
 				condenser.output.amount += recipeOutput.getCount();
 			}
 			if (!recipe.preservesInput()) {
-				condenser.input.amount -= recipe.getInput().getCount();
+				condenser.input.amount -= recipe.getInput().count();
 			}
 			return true;
 		} else {

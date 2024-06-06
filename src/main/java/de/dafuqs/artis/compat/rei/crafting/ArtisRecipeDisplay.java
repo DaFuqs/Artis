@@ -44,9 +44,9 @@ public class ArtisRecipeDisplay extends BasicDisplay implements SimpleGridMenuDi
 		return ArtisRecipeDisplay.Serializer.ofSimple(ArtisRecipeDisplay::simple).inputProvider(ArtisRecipeDisplay::getInputEntries);
 	}
 	
-	private static @NotNull ArtisRecipeDisplay simple(List<EntryIngredient> inputs, List<EntryIngredient> outputs, @NotNull Optional<Identifier> identifier) {
-		Recipe<?> optionalRecipe = identifier.flatMap(resourceLocation -> RecipeManagerContext.getInstance().getRecipeManager().get(resourceLocation)).orElse(null);
-		return new ArtisRecipeDisplay(inputs, outputs, (ArtisCraftingRecipe) optionalRecipe);
+	private static @NotNull ArtisRecipeDisplay simple(List<EntryIngredient> inputs, List<EntryIngredient> outputs, @NotNull Identifier identifier) {
+		RecipeEntry<?> recipe = RecipeManagerContext.getInstance().byId(identifier);
+		return new ArtisRecipeDisplay(inputs, outputs, recipe.value());
 	}
 	
 	public ArtisCraftingRecipe getDisplay() {

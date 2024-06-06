@@ -9,6 +9,8 @@ import io.github.cottonmc.cotton.gui.client.*;
 import io.github.cottonmc.cotton.gui.widget.*;
 import io.github.cottonmc.cotton.gui.widget.data.*;
 import net.fabricmc.api.*;
+import net.minecraft.block.*;
+import net.minecraft.block.entity.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.*;
 import net.minecraft.item.*;
@@ -195,9 +197,9 @@ public class ArtisRecipeProvider extends SyncedGuiDescription implements RecipeP
 	public static void updateResult(ServerWorld world, ArtisCraftingInventory inv, CraftingResultInventory resultInv, ArtisCraftingRecipeType artisCraftingRecipeType) {
 		ItemStack itemstack = ItemStack.EMPTY;
 		
-		Recipe recipe = findRecipe(artisCraftingRecipeType, inv, world, resultInv.getLastRecipe());
+		RecipeEntry<ArtisCraftingRecipe> recipe = findRecipe(artisCraftingRecipeType, inv, world, resultInv.getLastRecipe());
 		if (recipe != null) {
-			itemstack = recipe.craft(inv, world.getRegistryManager());
+			itemstack = recipe.value().craft(inv, world.getRegistryManager());
 		}
 		
 		resultInv.setStack(0, itemstack);
@@ -276,7 +278,7 @@ public class ArtisRecipeProvider extends SyncedGuiDescription implements RecipeP
 	public static ItemStack handleShiftCraft(PlayerEntity player, ArtisRecipeProvider container, Slot resultSlot, ArtisCraftingInventory input, CraftingResultInventory craftResult, int outStart, int outEnd) {
 		ItemStack outputCopy = ItemStack.EMPTY;
 		if (resultSlot != null && resultSlot.hasStack()) {
-			Recipe recipe = findRecipe(container.tableType, input, player.getWorld(), craftResult.getLastRecipe());
+			Recipe<?> recipe = findRecipe(container.tableType, input, player.getWorld(), craftResult.getLastRecipe());
 			while (recipe != null && recipe.matches(input, player.getWorld())) {
 				ItemStack recipeOutput = resultSlot.getStack().copy();
 				outputCopy = recipeOutput.copy();
@@ -301,18 +303,16 @@ public class ArtisRecipeProvider extends SyncedGuiDescription implements RecipeP
 		return craftResult.getLastRecipe() == null ? ItemStack.EMPTY : outputCopy;
 	}
 	
-	public static Recipe<?> findRecipe(ArtisCraftingRecipeType type, ArtisCraftingInventory inv, World world, @Nullable Recipe<?> lastRecipe) {
-		Identifier lastId = lastRecipe == null ? null : lastRecipe.getId();
-		
-		Optional<Pair<Identifier, ArtisCraftingRecipe>> foundRecipe = world.getRecipeManager().getFirstMatch(type, inv, world, lastId);
+	public static RecipeEntry<?> findRecipe(ArtisCraftingRecipeType type, ArtisCraftingInventory inv, World world, @Nullable Identifier lastId) {
+		Optional<RecipeEntry<ArtisCraftingRecipe>> foundRecipe = world.getRecipeManager().getFirstMatch(type, inv, world, lastId);
 		if (foundRecipe.isPresent()) {
-			return foundRecipe.get().getSecond();
+			return foundRecipe.get();
 		}
 		
 		if (type.shouldIncludeNormalRecipes()) {
-			Optional<Pair<Identifier, CraftingRecipe>> foundVanillaRecipe = world.getRecipeManager().getFirstMatch(RecipeType.CRAFTING, inv.getCraftingInventory(), world, lastId);
+			Optional<RecipeEntry<CraftingRecipe>> foundVanillaRecipe = world.getRecipeManager().getFirstMatch(RecipeType.CRAFTING, inv.getCraftingInventory(), world, lastId);
 			if (foundVanillaRecipe.isPresent()) {
-				return foundVanillaRecipe.get().getSecond();
+				return foundVanillaRecipe.get();
 			}
 		}
 		

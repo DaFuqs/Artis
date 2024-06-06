@@ -22,7 +22,7 @@ public class VariantBackedSlot extends Slot {
 	@Override
 	public boolean canInsert(ItemStack stack) {
 		ItemStack slotStack = inventory.getStack(index);
-		return slotStack.isEmpty() || ItemStack.canCombine(slotStack, stack);
+		return slotStack.isEmpty() || ItemStack.areEqual(slotStack, stack);
 	}
 	
 	@Override
@@ -39,7 +39,7 @@ public class VariantBackedSlot extends Slot {
 				long finalInsertAmount = Math.min(availableAmount, getMaxItemCount());
 				ItemStack setStack = insertStack.split((int) finalInsertAmount);
 				this.setStack(setStack);
-			} else if (ItemStack.canCombine(existingStack, insertStack)) {
+			} else if (ItemStack.areEqual(existingStack, insertStack)) {
 				long leftover = addAmount(availableAmount);
 				insertStack.decrement((int) (availableAmount - leftover));
 			}

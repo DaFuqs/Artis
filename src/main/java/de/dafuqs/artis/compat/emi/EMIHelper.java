@@ -1,7 +1,7 @@
 package de.dafuqs.artis.compat.emi;
 
+import de.dafuqs.artis.*;
 import dev.emi.emi.api.stack.*;
-import de.dafuqs.matchbooks.recipe.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

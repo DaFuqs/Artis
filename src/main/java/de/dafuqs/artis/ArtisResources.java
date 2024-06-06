@@ -23,7 +23,7 @@ public class ArtisResources {
 	
 	public static void registerDataForTable(@NotNull ArtisCraftingRecipeType artisCraftingRecipeType, @NotNull ArtisTableBlock block) {
 		// loot table (drops)
-		RESOURCE_PACK.addLootTable(block.getLootTableId(),
+		RESOURCE_PACK.addLootTable(block.getLootTableKey().getValue(),
 				loot("minecraft:block")
 						.pool(pool()
 								.rolls(1)

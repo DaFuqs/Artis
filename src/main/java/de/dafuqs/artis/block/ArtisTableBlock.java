@@ -30,7 +30,7 @@ public class ArtisTableBlock extends Block implements ExtendedScreenHandlerFacto
 	}
 	
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, @NotNull PlayerEntity player, Hand hand, BlockHitResult hit) {
+	protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
 		if (!player.isSneaking()) {
 			if (!world.isClient()) {
 				player.openHandledScreen(state.createScreenHandlerFactory(world, pos));

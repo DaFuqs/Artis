@@ -6,6 +6,8 @@ import io.github.cottonmc.cotton.gui.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.*;
 import net.minecraft.item.*;
+import net.minecraft.recipe.*;
+import org.jetbrains.annotations.*;
 
 public class ValidatedArtisResultSlot extends ValidatedSlot {
 	
@@ -46,7 +48,7 @@ public class ValidatedArtisResultSlot extends ValidatedSlot {
 	@Override
 	protected void onCrafted(ItemStack stack) {
 		if (this.amount > 0) {
-			stack.onCraft(this.player.getWorld(), this.player, this.amount);
+			stack.onCraftByPlayer(this.player.getWorld(), this.player, this.amount);
 		}
 		this.amount = 0;
 	}
@@ -55,10 +57,13 @@ public class ValidatedArtisResultSlot extends ValidatedSlot {
 	public void onTakeItem(PlayerEntity player, ItemStack stack) {
 		this.onCrafted(stack);
 		
-		if (this.inventory instanceof CraftingResultInventory craftingResultInventory && craftingResultInventory.getLastRecipe() instanceof ArtisCraftingRecipe artisCraftingRecipe) {
-			artisCraftingRecipe.useUpCatalyst(this.craftingInv, this.player);
-			artisCraftingRecipe.useUpIngredients(this.craftingInv, this.player);
-			this.craftingInv.onContentChanged();
+		if (this.inventory instanceof CraftingResultInventory craftingResultInventory) {
+			RecipeEntry<?> lastRecipe = craftingResultInventory.getLastRecipe();
+			if(lastRecipe != null && lastRecipe.value() instanceof ArtisCraftingRecipe artisCraftingRecipe) {
+				artisCraftingRecipe.useUpCatalyst(this.craftingInv, this.player);
+				artisCraftingRecipe.useUpIngredients(this.craftingInv, this.player);
+				this.craftingInv.onContentChanged();
+			}
 		}
 	}
 	

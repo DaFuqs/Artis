@@ -5,7 +5,6 @@ import de.dafuqs.artis.inventory.variant_backed.*;
 import de.dafuqs.artis.recipe.*;
 import net.fabricmc.fabric.api.transfer.v1.item.*;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.*;
-import de.dafuqs.matchbooks.recipe.*;
 import net.minecraft.inventory.*;
 import net.minecraft.item.*;
 import net.minecraft.recipe.*;
@@ -39,15 +38,15 @@ public class CondenserRecipe implements Recipe<Inventory> {
 		if (inv instanceof VariantBackedInventory variantBackedInventory) {
 			SingleVariantStorage<ItemVariant> input = variantBackedInventory.getStorage(0);
 			ItemStack invStack = input.variant.toStack((int) input.amount);
-			return this.input.test(invStack);
+			return this.input.matches(invStack);
 		} else {
-			return this.input.getIngredient().test(inv.getStack(0));
+			return this.input.ingredient().test(inv.getStack(0));
 		}
 	}
 	
 	@Override
-	public ItemStack craft(Inventory inventory, DynamicRegistryManager registryManager) {
-		return null;
+	public ItemStack craft(Inventory inventory, RegistryWrapper.WrapperLookup lookup) {
+		return this.output.copy();
 	}
 	
 	@Override
@@ -56,18 +55,13 @@ public class CondenserRecipe implements Recipe<Inventory> {
 	}
 	
 	@Override
-	public ItemStack getOutput(DynamicRegistryManager registryManager) {
+	public ItemStack getResult(RegistryWrapper.WrapperLookup registriesLookup) {
 		return this.output;
 	}
 	
 	@Override
 	public ItemStack createIcon() {
 		return new ItemStack(ArtisBlocks.CONDENSER_BLOCK);
-	}
-	
-	@Override
-	public Identifier getId() {
-		return this.id;
 	}
 	
 	@Override
@@ -90,7 +84,7 @@ public class CondenserRecipe implements Recipe<Inventory> {
 	@Override
 	public DefaultedList<Ingredient> getIngredients() {
 		DefaultedList<Ingredient> defaultedList = DefaultedList.of();
-		defaultedList.add(this.input.getIngredient());
+		defaultedList.add(this.input.ingredient());
 		return defaultedList;
 	}
 	
@@ -110,8 +104,7 @@ public class CondenserRecipe implements Recipe<Inventory> {
 		return preservesInput;
 	}
 	
-	public ItemStack getRawOutput() {
-		return this.output;
+	public Identifier getId() {
+		return this.id;
 	}
-	
 }

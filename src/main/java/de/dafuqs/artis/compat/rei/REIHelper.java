@@ -1,8 +1,8 @@
 package de.dafuqs.artis.compat.rei;
 
+import de.dafuqs.artis.*;
 import me.shedaniel.rei.api.common.entry.*;
 import me.shedaniel.rei.api.common.util.*;
-import de.dafuqs.matchbooks.recipe.*;
 import org.jetbrains.annotations.*;
 
 import java.util.*;

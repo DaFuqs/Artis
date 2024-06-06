@@ -43,7 +43,6 @@ dependencies {
 
 	modImplementation include("io.github.cottonmc:LibGui:${project.libgui_version}")
 	modImplementation include("net.devtech:arrp:${project.aarp_version}")
-	modImplementation include("com.github.Noaaan:Matchbooks:${project.matchbooks_version}")
 
 	modCompileOnly "dev.emi:emi-fabric:${emi_version}:api"
 

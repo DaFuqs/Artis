@@ -1,10 +1,16 @@
 package de.dafuqs.artis.recipe.crafting;
 
+import com.mojang.serialization.*;
+import com.mojang.serialization.codecs.*;
+import de.dafuqs.artis.*;
 import de.dafuqs.artis.api.*;
 import de.dafuqs.artis.inventory.crafting.*;
-import de.dafuqs.matchbooks.recipe.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.item.*;
+import net.minecraft.network.*;
+import net.minecraft.network.codec.*;
+import net.minecraft.recipe.*;
+import net.minecraft.recipe.book.*;
 import net.minecraft.util.*;
 import net.minecraft.util.collection.*;
 import net.minecraft.world.*;
@@ -13,8 +19,8 @@ import oshi.util.tuples.*;
 
 public class ShapedArtisRecipe extends ArtisCraftingRecipeBase {
 	
-	private final int width;
-	private final int height;
+	protected final int width;
+	protected final int height;
 	
 	public ShapedArtisRecipe(ArtisCraftingRecipeType type, Identifier id, String group, int width, int height, DefaultedList<IngredientStack> ingredients, ItemStack output, IngredientStack catalyst, int catalystCost) {
 		super(type, id, group, ingredients, output, catalyst, catalystCost);
@@ -36,6 +42,7 @@ public class ShapedArtisRecipe extends ArtisCraftingRecipeBase {
 	public boolean fits(int width, int height) {
 		return this.width <= width && this.height <= height;
 	}
+	
 	
 	public int getWidth() {
 		return this.width;
@@ -64,7 +71,7 @@ public class ShapedArtisRecipe extends ArtisCraftingRecipeBase {
 					}
 				}
 				
-				if (!ingredientStack.test(inv.getStack(i + j * inv.getWidth()))) {
+				if (!ingredientStack.matches(inv.getStack(i + j * inv.getWidth()))) {
 					return false;
 				}
 			}
@@ -108,14 +115,14 @@ public class ShapedArtisRecipe extends ArtisCraftingRecipeBase {
 				if (!invStack.isEmpty()) {
 					Item recipeReminderItem = invStack.getItem().getRecipeRemainder();
 					if (recipeReminderItem == null) {
-						invStack.decrement(ingredientStackAtPos.getCount());
+						invStack.decrement(ingredientStackAtPos.count());
 					} else {
-						if (inventory.getStack(invStackId).getCount() == ingredientStackAtPos.getCount()) {
+						if (inventory.getStack(invStackId).getCount() == ingredientStackAtPos.count()) {
 							ItemStack remainderStack = recipeReminderItem.getDefaultStack();
-							remainderStack.setCount(ingredientStackAtPos.getCount());
+							remainderStack.setCount(ingredientStackAtPos.count());
 							inventory.setStack(invStackId, remainderStack);
 						} else {
-							inventory.getStack(invStackId).decrement(ingredientStackAtPos.getCount());
+							inventory.getStack(invStackId).decrement(ingredientStackAtPos.count());
 							ItemStack remainderStack = recipeReminderItem.getDefaultStack();
 							player.giveItemStack(remainderStack);
 						}
@@ -123,6 +130,52 @@ public class ShapedArtisRecipe extends ArtisCraftingRecipeBase {
 				}
 				
 			}
+		}
+	}
+	
+	
+	public static class Serializer implements RecipeSerializer<ShapedRecipe> {
+		public static final MapCodec<ShapedRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
+			return instance.group(Codec.STRING.optionalFieldOf("group", "").forGetter((recipe) -> {
+				return recipe.group;
+			}), CraftingRecipeCategory.CODEC.fieldOf("category").orElse(CraftingRecipeCategory.MISC).forGetter((recipe) -> {
+				return recipe.category;
+			}), RawShapedRecipe.CODEC.forGetter((recipe) -> {
+				return recipe.raw;
+			}), ItemStack.VALIDATED_CODEC.fieldOf("result").forGetter((recipe) -> {
+				return recipe.result;
+			}), Codec.BOOL.optionalFieldOf("show_notification", true).forGetter((recipe) -> {
+				return recipe.showNotification;
+			})).apply(instance, ShapedRecipe::new);
+		});
+		public static final PacketCodec<RegistryByteBuf, ShapedRecipe> PACKET_CODEC = PacketCodec.ofStatic(ShapedRecipe.Serializer::write, ShapedRecipe.Serializer::read);
+		
+		public Serializer() {
+		}
+		
+		public MapCodec<ShapedRecipe> codec() {
+			return CODEC;
+		}
+		
+		public PacketCodec<RegistryByteBuf, ShapedRecipe> packetCodec() {
+			return PACKET_CODEC;
+		}
+		
+		private static ShapedRecipe read(RegistryByteBuf buf) {
+			String string = buf.readString();
+			CraftingRecipeCategory craftingRecipeCategory = (CraftingRecipeCategory)buf.readEnumConstant(CraftingRecipeCategory.class);
+			RawShapedRecipe rawShapedRecipe = (RawShapedRecipe)RawShapedRecipe.PACKET_CODEC.decode(buf);
+			ItemStack itemStack = (ItemStack)ItemStack.PACKET_CODEC.decode(buf);
+			boolean bl = buf.readBoolean();
+			return new ShapedRecipe(string, craftingRecipeCategory, rawShapedRecipe, itemStack, bl);
+		}
+		
+		private static void write(RegistryByteBuf buf, ShapedRecipe recipe) {
+			buf.writeString(recipe.group);
+			buf.writeEnumConstant(recipe.category);
+			RawShapedRecipe.PACKET_CODEC.encode(buf, recipe.raw);
+			ItemStack.PACKET_CODEC.encode(buf, recipe.result);
+			buf.writeBoolean(recipe.showNotification);
 		}
 	}
 	

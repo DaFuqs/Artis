@@ -1,8 +1,8 @@
 package de.dafuqs.artis.recipe.crafting;
 
+import de.dafuqs.artis.*;
 import de.dafuqs.artis.api.*;
 import de.dafuqs.artis.inventory.crafting.*;
-import de.dafuqs.matchbooks.recipe.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.item.*;
 import net.minecraft.recipe.*;
@@ -15,15 +15,15 @@ import java.util.*;
 
 public abstract class ArtisCraftingRecipeBase implements Recipe<ArtisCraftingInventory>, ArtisCraftingRecipe {
 	
-	private final ArtisCraftingRecipeType type;
+	protected final ArtisCraftingRecipeType type;
 	protected RecipeSerializer<? extends ArtisCraftingRecipe> serializer;
 	
-	private final Identifier id;
-	private final String group;
+	protected final Identifier id;
+	protected final String group;
 	protected final DefaultedList<IngredientStack> ingredientStacks;
-	private final ItemStack output;
-	private final IngredientStack catalyst;
-	private final int catalystCost;
+	protected final ItemStack output;
+	protected final IngredientStack catalyst;
+	protected final int catalystCost;
 	
 	protected ArtisCraftingRecipeBase(ArtisCraftingRecipeType recipeType, Identifier id, String group, DefaultedList<IngredientStack> ingredientStacks, ItemStack output, IngredientStack catalyst, int catalystCost) {
 		this.type = recipeType;
@@ -42,11 +42,6 @@ public abstract class ArtisCraftingRecipeBase implements Recipe<ArtisCraftingInv
 	}
 	
 	@Override
-	public Identifier getId() {
-		return this.id;
-	}
-	
-	@Override
 	public ArtisCraftingRecipeType getType() {
 		return type;
 	}
@@ -62,15 +57,10 @@ public abstract class ArtisCraftingRecipeBase implements Recipe<ArtisCraftingInv
 	}
 	
 	@Override
-	public ItemStack getOutput(DynamicRegistryManager registryManager) {
-		return this.output;
-	}
-	
-	@Override
 	public boolean matches(ArtisCraftingInventory inventory, World world) {
 		ItemStack toTest = inventory.getCatalyst();
 		if (inventory.shouldCompareCatalyst()) {
-			if (!catalyst.test(toTest)) return false;
+			if (!catalyst.matches(toTest)) return false;
 			if (toTest.isDamageable()) {
 				return toTest.getMaxDamage() - toTest.getDamage() >= catalystCost;
 			} else if (toTest.getItem() instanceof SpecialCatalyst specialCatalyst) {
@@ -83,8 +73,13 @@ public abstract class ArtisCraftingRecipeBase implements Recipe<ArtisCraftingInv
 	}
 	
 	@Override
-	public ItemStack craft(ArtisCraftingInventory inventory, DynamicRegistryManager registryManager) {
+	public ItemStack craft(ArtisCraftingInventory inventory, RegistryWrapper.WrapperLookup lookup) {
 		return this.output.copy();
+	}
+	
+	@Override
+	public ItemStack getResult(RegistryWrapper.WrapperLookup registriesLookup) {
+		return this.output;
 	}
 	
 	public IngredientStack getCatalyst() {
@@ -127,6 +122,10 @@ public abstract class ArtisCraftingRecipeBase implements Recipe<ArtisCraftingInv
 				}
 			}
 		}
+	}
+	
+	public Identifier getId() {
+		return this.id;
 	}
 	
 }

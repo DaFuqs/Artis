@@ -18,11 +18,12 @@ import oshi.util.tuples.*;
 import java.util.*;
 import java.util.function.*;
 
-public record RawShapedArtisRecipe(int width, int height, int maxWidth, int maxHeight, DefaultedList<IngredientStack> ingredientStacks, Optional<Data> data) {
+public record RawShapedArtisRecipe(int width, int height, int maxWidth, int maxHeight,
+                                   DefaultedList<IngredientStack> ingredientStacks, Optional<Data> data) {
     
     public static final MapCodec<RawShapedArtisRecipe> CODEC = RawShapedArtisRecipe.Data.CODEC.flatXmap(RawShapedArtisRecipe::fromData, (recipe) -> recipe.data().map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Cannot encode unpacked recipe")));
     public static final PacketCodec<RegistryByteBuf, RawShapedArtisRecipe> PACKET_CODEC = PacketCodec.of(RawShapedArtisRecipe::writeToBuf, RawShapedArtisRecipe::readFromBuf);
-
+    
     public RawShapedArtisRecipe(int width, int height, int maxWidth, int maxHeight, DefaultedList<IngredientStack> ingredientStacks, Optional<Data> data) {
         this.width = width;
         this.height = height;
@@ -31,52 +32,52 @@ public record RawShapedArtisRecipe(int width, int height, int maxWidth, int maxH
         this.ingredientStacks = ingredientStacks;
         this.data = data;
     }
-
+    
     public static RawShapedArtisRecipe create(Map<Character, IngredientStack> key, String... pattern) {
         return create(key, List.of(pattern));
     }
-
+    
     public static RawShapedArtisRecipe create(Map<Character, IngredientStack> key, List<String> pattern) {
         Data data = new Data(key, pattern);
         return fromData(data).getOrThrow();
     }
-
+    
     private static DataResult<RawShapedArtisRecipe> fromData(Data data) {
         String[] strings = removePadding(data.pattern);
         int width = strings[0].length();
         int height = strings.length;
         DefaultedList<IngredientStack> defaultedList = DefaultedList.ofSize(width * height, IngredientStack.EMPTY);
         CharSet charSet = new CharArraySet(data.key.keySet());
-
-        for(int k = 0; k < strings.length; ++k) {
+        
+        for (int k = 0; k < strings.length; ++k) {
             String string = strings[k];
-
-            for(int l = 0; l < string.length(); ++l) {
+            
+            for (int l = 0; l < string.length(); ++l) {
                 char c = string.charAt(l);
                 IngredientStack ingredient = c == ' ' ? IngredientStack.EMPTY : data.key.get(c);
                 if (ingredient == null) {
                     return DataResult.error(() -> "Pattern references symbol '" + c + "' but it's not defined in the key");
                 }
-
+                
                 charSet.remove(c);
                 defaultedList.set(l + width * k, ingredient);
             }
         }
-
+        
         if (!charSet.isEmpty()) {
             return DataResult.error(() -> "Key defines symbols that aren't used in pattern: " + charSet);
         } else {
             return DataResult.success(new RawShapedArtisRecipe(width, height, maxWidth, maxHeight, defaultedList, Optional.of(data)));
         }
     }
-
+    
     static String[] removePadding(List<String> pattern) {
         int i = Integer.MAX_VALUE;
         int j = 0;
         int k = 0;
         int l = 0;
-
-        for(int m = 0; m < pattern.size(); ++m) {
+        
+        for (int m = 0; m < pattern.size(); ++m) {
             String string = pattern.get(m);
             i = Math.min(i, findFirstSymbol(string));
             int n = findLastSymbol(string);
@@ -85,59 +86,59 @@ public record RawShapedArtisRecipe(int width, int height, int maxWidth, int maxH
                 if (k == m) {
                     ++k;
                 }
-
+                
                 ++l;
             } else {
                 l = 0;
             }
         }
-
+        
         if (pattern.size() == l) {
             return new String[0];
         } else {
             String[] strings = new String[pattern.size() - l - k];
-
-            for(int o = 0; o < strings.length; ++o) {
+            
+            for (int o = 0; o < strings.length; ++o) {
                 strings[o] = pattern.get(o + k).substring(i, j + 1);
             }
-
+            
             return strings;
         }
     }
-
+    
     private static int findFirstSymbol(String line) {
         int i;
-        for(i = 0; i < line.length() && line.charAt(i) == ' '; ++i) {
+        for (i = 0; i < line.length() && line.charAt(i) == ' '; ++i) {
         }
         return i;
     }
-
+    
     private static int findLastSymbol(String line) {
         int i;
-        for(i = line.length() - 1; i >= 0 && line.charAt(i) == ' '; --i) {
+        for (i = line.length() - 1; i >= 0 && line.charAt(i) == ' '; --i) {
         }
         return i;
     }
-
+    
     public boolean matches(RecipeInputInventory inventory) {
-        for(int i = 0; i <= inventory.getWidth() - this.width; ++i) {
-            for(int j = 0; j <= inventory.getHeight() - this.height; ++j) {
+        for (int i = 0; i <= inventory.getWidth() - this.width; ++i) {
+            for (int j = 0; j <= inventory.getHeight() - this.height; ++j) {
                 if (this.matches(inventory, i, j, true)) {
                     return true;
                 }
-
+                
                 if (this.matches(inventory, i, j, false)) {
                     return true;
                 }
             }
         }
-
+        
         return false;
     }
-
+    
     private boolean matches(RecipeInputInventory inventory, int offsetX, int offsetY, boolean flipped) {
-        for(int i = 0; i < inventory.getWidth(); ++i) {
-            for(int j = 0; j < inventory.getHeight(); ++j) {
+        for (int i = 0; i < inventory.getWidth(); ++i) {
+            for (int j = 0; j < inventory.getHeight(); ++j) {
                 int k = i - offsetX;
                 int l = j - offsetY;
                 IngredientStack ingredient = IngredientStack.EMPTY;
@@ -148,16 +149,16 @@ public record RawShapedArtisRecipe(int width, int height, int maxWidth, int maxH
                         ingredient = this.ingredientStacks.get(k + l * this.width);
                     }
                 }
-
+                
                 if (!ingredient.matches(inventory.getStack(i + j * inventory.getWidth()))) {
                     return false;
                 }
             }
         }
-
+        
         return true;
     }
-
+    
     private void writeToBuf(RegistryByteBuf buf) {
         buf.writeVarInt(this.width);
         buf.writeVarInt(this.height);
@@ -165,7 +166,7 @@ public record RawShapedArtisRecipe(int width, int height, int maxWidth, int maxH
 			IngredientStack.PACKET_CODEC.encode(buf, ingredient);
 		}
     }
-
+    
     private static RawShapedArtisRecipe readFromBuf(RegistryByteBuf buf) {
         int i = buf.readVarInt();
         int j = buf.readVarInt();
@@ -173,23 +174,23 @@ public record RawShapedArtisRecipe(int width, int height, int maxWidth, int maxH
         defaultedList.replaceAll((ingredient) -> IngredientStack.PACKET_CODEC.decode(buf));
         return new RawShapedArtisRecipe(i, j, defaultedList, Optional.empty());
     }
-
+    
     public int width() {
         return this.width;
     }
-
+    
     public int height() {
         return this.height;
     }
-
+    
     public DefaultedList<IngredientStack> ingredientStacks() {
         return this.ingredientStacks;
     }
-
+    
     public Optional<Data> data() {
         return this.data;
     }
-
+    
     public record Data(Map<Character, IngredientStack> key, List<String> pattern) {
         
         private static final Codec<List<String>> PATTERN_CODEC = Codec.STRING.listOf().comapFlatMap((pattern) -> {
@@ -221,7 +222,7 @@ public record RawShapedArtisRecipe(int width, int height, int maxWidth, int maxH
                             }
                         });
                     }
-                } while(i == string.length());
+                } while (i == string.length());
                 
                 return DataResult.error(() -> "Invalid pattern: each row must be the same width");
             }
@@ -239,16 +240,16 @@ public record RawShapedArtisRecipe(int width, int height, int maxWidth, int maxH
                 Codecs.strictUnboundedMap(KEY_ENTRY_CODEC, IngredientStack.CODEC).fieldOf("key").forGetter((data) -> data.key),
                 PATTERN_CODEC.fieldOf("pattern").forGetter((data) -> data.pattern)
         ).apply(instance, Data::new));
-
+        
         public Data(Map<Character, IngredientStack> key, List<String> pattern) {
             this.key = key;
             this.pattern = pattern;
         }
-
+        
         public Map<Character, IngredientStack> key() {
             return this.key;
         }
-
+        
         public List<String> pattern() {
             return this.pattern;
         }
@@ -322,5 +323,5 @@ public record RawShapedArtisRecipe(int width, int height, int maxWidth, int maxH
             }
         }
     }
-    
+	
 }

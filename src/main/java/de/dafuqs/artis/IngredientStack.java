@@ -36,46 +36,46 @@ public record IngredientStack(Ingredient ingredient, int count, ComponentPredica
     public IngredientStack(Ingredient ingredient, RegistryEntry<Item> displayItem) {
         this(ingredient, 1, displayItem);
     }
-
+    
     public IngredientStack(Ingredient ingredient, int count, RegistryEntry<Item> displayItem) {
         this(ingredient, count, ComponentPredicate.EMPTY, displayItem);
     }
-
+    
     public IngredientStack(Ingredient ingredient, int count, ComponentPredicate components, RegistryEntry<Item> displayItem) {
         this(ingredient, count, components, createDisplayStack(displayItem, count, components));
     }
-
+    
     public IngredientStack(Ingredient ingredient, int count, ComponentPredicate components, ItemStack displayStack) {
         this.ingredient = ingredient;
         this.count = count;
         this.components = components;
         this.displayStack = displayStack;
     }
-
+    
     public IngredientStack withComponents(UnaryOperator<ComponentPredicate.Builder> builderCallback, RegistryEntry<Item> displayItem) {
         return new IngredientStack(this.ingredient, this.count, builderCallback.apply(ComponentPredicate.builder()).build(), displayItem);
     }
-
+    
     private static ItemStack createDisplayStack(RegistryEntry<Item> item, int count, ComponentPredicate components) {
         return new ItemStack(item, count, components.toChanges());
     }
-
+    
     public boolean matches(ItemStack stack) {
         return this.ingredient.test(stack) && stack.getCount() >= this.count && this.components.test(stack);
     }
-
+    
     public Ingredient ingredient() {
         return this.ingredient;
     }
-
+    
     public int count() {
         return this.count;
     }
-
+    
     public ComponentPredicate components() {
         return this.components;
     }
-
+    
     public ItemStack displayStack() {
         return this.displayStack;
     }
@@ -91,5 +91,5 @@ public record IngredientStack(Ingredient ingredient, int count, ComponentPredica
                 .peek(stack -> stack.applyComponentsFrom(displayStack.getComponents())) // TODO: needed?
                 .collect(Collectors.toList());
     }
-    
+	
 }

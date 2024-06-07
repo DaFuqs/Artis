@@ -10,7 +10,7 @@ public class EMIHelper {
 	
 	public static List<EmiIngredient> ofIngredientStacks(List<IngredientStack> ingredientStacks) {
 		List<EmiIngredient> list = new ArrayList<>();
-		for(IngredientStack stack : ingredientStacks) {
+		for (IngredientStack stack : ingredientStacks) {
 			list.add(ofIngredientStack(stack));
 		}
 		return list;

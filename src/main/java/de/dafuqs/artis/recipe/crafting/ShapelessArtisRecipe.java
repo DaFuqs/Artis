@@ -10,13 +10,9 @@ import net.minecraft.item.*;
 import net.minecraft.network.*;
 import net.minecraft.network.codec.*;
 import net.minecraft.recipe.*;
-import net.minecraft.recipe.book.*;
 import net.minecraft.util.collection.*;
 import net.minecraft.util.dynamic.*;
 import net.minecraft.world.*;
-
-import java.util.*;
-import java.util.function.*;
 
 public class ShapelessArtisRecipe extends ArtisCraftingRecipeBase {
 	

@@ -1,20 +1,13 @@
 package de.dafuqs.artis;
 
-import com.mojang.datafixers.types.*;
 import de.dafuqs.artis.api.*;
 import de.dafuqs.artis.block.*;
-import de.dafuqs.artis.inventory.crafting.*;
 import net.fabricmc.fabric.api.event.registry.*;
-import net.fabricmc.fabric.api.object.builder.v1.block.*;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.*;
-import net.fabricmc.fabric.api.screenhandler.v1.*;
 import net.fabricmc.fabric.api.transfer.v1.item.*;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.*;
-import net.minecraft.datafixer.*;
 import net.minecraft.item.*;
 import net.minecraft.registry.*;
-import net.minecraft.screen.*;
 import net.minecraft.util.*;
 
 import java.util.*;
@@ -76,7 +69,7 @@ public class ArtisBlocks {
 		CONDENSER_BLOCK_ENTITY = registerBlockEntity("condenser", CondenserBlockEntity::new, CONDENSER_BLOCK);
 		
 		ItemStorage.SIDED.registerForBlockEntity((condenserBlockEntity, direction) -> {
-			if(direction == null) {
+			if (direction == null) {
 				return condenserBlockEntity.output;
 			}
 			

@@ -2,17 +2,14 @@ package de.dafuqs.artis;
 
 import com.google.gson.*;
 import de.dafuqs.artis.api.*;
-import net.fabricmc.fabric.api.object.builder.v1.block.*;
 import net.fabricmc.loader.api.*;
 import net.minecraft.block.*;
 import net.minecraft.registry.*;
 import net.minecraft.util.*;
-import org.apache.logging.log4j.Level;
 import org.jetbrains.annotations.*;
 
 import java.io.*;
 import java.util.*;
-import java.util.function.*;
 
 public class ArtisConfig {
 	
@@ -90,7 +87,7 @@ public class ArtisConfig {
 		if (JsonHelper.getBoolean(json, "requires_tool", false)) {
 			settings.requiresTool();
 		}
-		if (!JsonHelper.getBoolean(json,"collidable", false)) {
+		if (!JsonHelper.getBoolean(json, "collidable", false)) {
 			settings.noCollision();
 		}
 		if (JsonHelper.getBoolean(json, "non_opaque", false)) {
@@ -117,13 +114,13 @@ public class ArtisConfig {
 	
 	@Contract("_, _ -> new")
 	static @NotNull ArtisCraftingRecipeType getType(@NotNull String key, @NotNull JsonObject json) {
-		String tableType = JsonHelper.getString(json,  "type", "normal");
+		String tableType = JsonHelper.getString(json, "type", "normal");
 		Identifier id;
 		String name;
 		boolean blockEntity;
 		if (!key.contains(":")) {
 			id = new Identifier(Artis.MOD_ID, key);
-			name = JsonHelper.getString(json,  "display_name");
+			name = JsonHelper.getString(json, "display_name");
 			
 			blockEntity = JsonHelper.getBoolean(json, "block_entity", false);
 		} else {
@@ -200,71 +197,71 @@ public class ArtisConfig {
 	}
 	
 	private static final String DEFAULT_CONFIG = """
-{
-  "minecraft:fletching_table": {
-    "type": "existing_block",
-    "normal_recipes": true,
-    "width": 1,
-    "height": 3,
-    "catalyst_slot": true
-  },
-  "minecraft:stick": {
-    "type": "existing_item",
-    "width": 2,
-    "height": 3,
-    "catalyst_slot": false
-  },
-  "test_table43": {
-    "display_name": "Test Table 4x3",
-    "width": 4,
-    "height": 3,
-    "block_entity": true,
-    "settings": {
-      "copy": "minecraft:crafting_table",
-      "non_opaque": true,
-      "hardness": 4,
-      "resistance": 3
-    },
-    "requires_tool": true,
-    "tags": [
-      "minecraft:blocks/needs_stone_tool",
-      "minecraft:blocks/mineable/pickaxe"
-    ]
-  },
-  "test_table66": {
-    "display_name": "Test Table 6x6",
-    "width": 6,
-    "height": 6,
-    "normal_recipes": true,
-    "block_entity": false,
-    "color": "#7F76D1",
-    "settings": {
-      "material": "wood",
-      "non_opaque": true
-    },
-    "catalyst_slot": true,
-    "tags": [
-      "minecraft:blocks/needs_stone_tool",
-      "minecraft:blocks/mineable/pickaxe"
-    ]
-  },
-  "test_table77": {
-    "display_name": "Test Table 7x7",
-    "width": 7,
-    "height": 7,
-    "block_entity": true,
-    "color": "#7F76D1",
-    "settings": {
-      "material": "wood",
-      "non_opaque": true
-    },
-    "catalyst_slot": true,
-    "tags": [
-      "minecraft:blocks/needs_stone_tool",
-      "minecraft:blocks/mineable/pickaxe"
-    ]
-  }
-}
-""";
+			{
+			  "minecraft:fletching_table": {
+			    "type": "existing_block",
+			    "normal_recipes": true,
+			    "width": 1,
+			    "height": 3,
+			    "catalyst_slot": true
+			  },
+			  "minecraft:stick": {
+			    "type": "existing_item",
+			    "width": 2,
+			    "height": 3,
+			    "catalyst_slot": false
+			  },
+			  "test_table43": {
+			    "display_name": "Test Table 4x3",
+			    "width": 4,
+			    "height": 3,
+			    "block_entity": true,
+			    "settings": {
+			      "copy": "minecraft:crafting_table",
+			      "non_opaque": true,
+			      "hardness": 4,
+			      "resistance": 3
+			    },
+			    "requires_tool": true,
+			    "tags": [
+			      "minecraft:blocks/needs_stone_tool",
+			      "minecraft:blocks/mineable/pickaxe"
+			    ]
+			  },
+			  "test_table66": {
+			    "display_name": "Test Table 6x6",
+			    "width": 6,
+			    "height": 6,
+			    "normal_recipes": true,
+			    "block_entity": false,
+			    "color": "#7F76D1",
+			    "settings": {
+			      "material": "wood",
+			      "non_opaque": true
+			    },
+			    "catalyst_slot": true,
+			    "tags": [
+			      "minecraft:blocks/needs_stone_tool",
+			      "minecraft:blocks/mineable/pickaxe"
+			    ]
+			  },
+			  "test_table77": {
+			    "display_name": "Test Table 7x7",
+			    "width": 7,
+			    "height": 7,
+			    "block_entity": true,
+			    "color": "#7F76D1",
+			    "settings": {
+			      "material": "wood",
+			      "non_opaque": true
+			    },
+			    "catalyst_slot": true,
+			    "tags": [
+			      "minecraft:blocks/needs_stone_tool",
+			      "minecraft:blocks/mineable/pickaxe"
+			    ]
+			  }
+			}
+			""";
 	
 }

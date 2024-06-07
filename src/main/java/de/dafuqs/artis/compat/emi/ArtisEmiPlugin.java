@@ -24,7 +24,7 @@ public class ArtisEmiPlugin implements EmiPlugin {
 		registerCategories(registry);
 		registerRecipes(registry);
 	}
-
+	
 	public void registerCategories(EmiRegistry registry) {
 		registry.addCategory(CONDENSER);
 		
@@ -43,22 +43,22 @@ public class ArtisEmiPlugin implements EmiPlugin {
 			registry.addCategory(category);
 			registry.addWorkstation(category, stack);
 			
-			if(tableType.shouldIncludeNormalRecipes()) {
+			if (tableType.shouldIncludeNormalRecipes()) {
 				registry.addWorkstation(VanillaEmiRecipeCategories.CRAFTING, stack);
 			}
 		}
 		
 		registry.addWorkstation(CONDENSER, EmiStack.of(ArtisBlocks.CONDENSER_BLOCK));
 	}
-
+	
 	public void registerRecipes(EmiRegistry registry) {
-		for(Map.Entry<ArtisCraftingRecipeType, EmiRecipeCategory> entry : CRAFTING.entrySet()) {
+		for (Map.Entry<ArtisCraftingRecipeType, EmiRecipeCategory> entry : CRAFTING.entrySet()) {
 			addAll(registry, entry.getKey(), ArtisCraftingEmiRecipe::new);
 		}
 		
 		addAll(registry, ArtisRecipeTypes.CONDENSER, CondenserEmiRecipe::new);
 	}
-
+	
 	public <C extends Inventory, T extends Recipe<C>> void addAll(EmiRegistry registry, RecipeType<T> type, Function<T, EmiRecipe> constructor) {
 		for (RecipeEntry<T> recipe : registry.getRecipeManager().listAllOfType(type)) {
 			registry.addRecipe(constructor.apply(recipe.value()));

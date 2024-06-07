@@ -2,7 +2,6 @@ package de.dafuqs.artis.event;
 
 import de.dafuqs.artis.*;
 import de.dafuqs.artis.api.*;
-import de.dafuqs.artis.inventory.crafting.*;
 import net.fabricmc.fabric.api.event.player.*;
 import net.minecraft.block.*;
 import net.minecraft.item.*;

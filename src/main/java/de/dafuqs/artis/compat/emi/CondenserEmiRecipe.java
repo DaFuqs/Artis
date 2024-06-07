@@ -69,7 +69,7 @@ public class CondenserEmiRecipe implements EmiRecipe {
 		holder.addFillingArrow(47, 8, timeTicks * 50); // arrow
 		holder.addSlot(output, 77, 4).large(true); // output
 		
-		if(preservesInput) {
+		if (preservesInput) {
 			holder.addTexture(CondenserScreen.BACKGROUND, 44, 0, 9, 7, 176, 31);
 		}
 		

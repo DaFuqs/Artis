@@ -8,20 +8,12 @@ import net.minecraft.block.entity.*;
 import net.minecraft.entity.player.*;
 import net.minecraft.inventory.*;
 import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraft.network.*;
 import net.minecraft.recipe.*;
-import net.minecraft.registry.*;
 import net.minecraft.screen.*;
-import net.minecraft.server.network.*;
 import net.minecraft.text.*;
-import net.minecraft.util.*;
 import net.minecraft.util.collection.*;
 import net.minecraft.util.math.*;
-import net.minecraft.world.*;
 import org.jetbrains.annotations.*;
-
-import java.util.*;
 
 public class ArtisTableBlockEntity extends LootableContainerBlockEntity implements SidedInventory, RecipeInputProvider {
 	
@@ -72,11 +64,11 @@ public class ArtisTableBlockEntity extends LootableContainerBlockEntity implemen
 			// something tells me there is an easier way to do this...
 			int slotCount = tableType.getWidth() + tableType.getHeight();
 			int[] slots = new int[slotCount];
-			for(int i = 0; i < slotCount; i++) {
+			for (int i = 0; i < slotCount; i++) {
 				slots[i] = i;
 			}
 			return slots;
-		} else if(tableType.hasCatalystSlot()) {
+		} else if (tableType.hasCatalystSlot()) {
 			return new int[]{tableType.getCatalystSlotIndex()};
 		}
 		return new int[]{};

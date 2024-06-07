@@ -5,9 +5,7 @@ import de.dafuqs.artis.*;
 import de.dafuqs.artis.compat.rei.crafting.*;
 import de.dafuqs.artis.inventory.crafting.*;
 import de.dafuqs.artis.recipe.crafting.*;
-import me.shedaniel.math.*;
 import me.shedaniel.rei.api.common.category.*;
-import net.fabricmc.fabric.api.screenhandler.v1.*;
 import net.minecraft.network.*;
 import net.minecraft.network.codec.*;
 import net.minecraft.recipe.*;
@@ -89,7 +87,7 @@ public class ArtisCraftingRecipeType implements RecipeType<ArtisCraftingRecipe> 
 	}
 	
 	public int getCatalystSlotIndex() {
-		if(hasCatalystSlot()) {
+		if (hasCatalystSlot()) {
 			return getWidth() * getHeight() + 1;
 		}
 		return -1;

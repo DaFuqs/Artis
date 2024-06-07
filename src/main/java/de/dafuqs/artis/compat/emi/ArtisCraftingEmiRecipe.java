@@ -82,7 +82,7 @@ public class ArtisCraftingEmiRecipe implements EmiRecipe {
 				if (shapeless) {
 					slotIngredient = index < input.size() ? input.get(index) : EmiStack.of(ItemStack.EMPTY);
 				} else {
-					if(x < this.width) {
+					if (x < this.width) {
 						int inputIndex = index - y * (typeWidth - this.width);
 						slotIngredient = inputIndex < input.size() ? input.get(inputIndex) : EmiStack.of(ItemStack.EMPTY);
 					} else {
@@ -105,7 +105,7 @@ public class ArtisCraftingEmiRecipe implements EmiRecipe {
 		// catalyst
 		if (recipeType.hasCatalystSlot() && !catalyst.isEmpty()) {
 			widgets.addSlot(catalyst, startX + 9, startY + 37);
-			if(catalystCost > 0) {
+			if (catalystCost > 0) {
 				widgets.addText(Text.literal("-" + catalystCost), startX + 9, startY + 57, Formatting.RED.getColorValue(), false);
 			} else {
 				widgets.addText(Text.translatable("artis.recipe.tooltip.not_consumed"), startX + 2, startY + 57, 0x3f3f3f, false);

@@ -13,11 +13,11 @@
     }
   },
   "result": {
-    "item": "minecraft:iron_block",
+    "id": "minecraft:iron_block",
     "count": 4
   },
-  "catalyst": {
+  "catalyst_stack": {
     "item": "minecraft:diamond_pickaxe"
   },
-  "cost": 10
+  "catalyst_amount": 10
 }

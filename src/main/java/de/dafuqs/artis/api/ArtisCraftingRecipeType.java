@@ -1,5 +1,6 @@
 package de.dafuqs.artis.api;
 
+import com.mojang.serialization.*;
 import de.dafuqs.artis.*;
 import de.dafuqs.artis.compat.rei.crafting.*;
 import de.dafuqs.artis.inventory.crafting.*;
@@ -7,6 +8,8 @@ import de.dafuqs.artis.recipe.crafting.*;
 import me.shedaniel.math.*;
 import me.shedaniel.rei.api.common.category.*;
 import net.fabricmc.fabric.api.screenhandler.v1.*;
+import net.minecraft.network.*;
+import net.minecraft.network.codec.*;
 import net.minecraft.recipe.*;
 import net.minecraft.registry.*;
 import net.minecraft.screen.*;
@@ -17,6 +20,9 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 
 public class ArtisCraftingRecipeType implements RecipeType<ArtisCraftingRecipe> {
+	
+	public static final Codec<ArtisCraftingRecipeType> CODEC = ;
+	public static final PacketCodec<RegistryByteBuf, ArtisCraftingRecipeType> PACKET_CODEC = ;
 	
 	private final Identifier id;
 	private final String name;

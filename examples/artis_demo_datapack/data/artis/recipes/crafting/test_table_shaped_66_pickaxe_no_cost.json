@@ -10,11 +10,11 @@
      }
    },
    "result": {
-     "item": "minecraft:deepslate",
+     "id": "minecraft:deepslate",
      "count": 2
    },
-   "catalyst": {
+   "catalyst_stack": {
      "item": "minecraft:diamond_pickaxe"
    },
-   "cost": 0
+   "catalyst_amount": 0
  } 

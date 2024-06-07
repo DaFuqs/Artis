@@ -15,7 +15,7 @@ public class CondenserRecipeDisplay extends BasicDisplay {
 	protected final boolean preservesInput;
 	
 	public CondenserRecipeDisplay(CondenserRecipe recipe) {
-		super(Collections.singletonList(REIHelper.ofIngredientStack(recipe.getInput())), Collections.singletonList(EntryIngredients.of(recipe.getRawOutput())));
+		super(Collections.singletonList(REIHelper.ofIngredientStack(recipe.getInput())), Collections.singletonList(EntryIngredients.of(recipe.getResult())));
 		this.timeTicks = recipe.getTimeTicks();
 		this.fuelPerTick = recipe.getFuelPerTick();
 		this.preservesInput = recipe.preservesInput();

@@ -26,7 +26,8 @@ public class ArtisRecipeTypes {
 	}
 	
 	public static void register() {
-		CONDENSER_RECIPE_SERIALIZER = registerSerializer(CONDENSER_RECIPE_ID, new CondenserRecipeSerializer(CondenserRecipe::new));
+		
+		CONDENSER_RECIPE_SERIALIZER = registerSerializer(CONDENSER_RECIPE_ID, new CondenserRecipe.Serializer());
 		CONDENSER = registerRecipeType(CONDENSER_RECIPE_ID);
 	}
 	

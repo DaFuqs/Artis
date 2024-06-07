@@ -27,7 +27,7 @@ public class CondenserEmiRecipe implements EmiRecipe {
 	public CondenserEmiRecipe(CondenserRecipe recipe) {
 		this.id = recipe.getId();
 		this.input = EMIHelper.ofIngredientStack(recipe.getInput());
-		this.output = EmiStack.of(recipe.getRawOutput());
+		this.output = EmiStack.of(recipe.getResult());
 		this.timeTicks = recipe.getTimeTicks();
 		this.fuelPerTick = recipe.getFuelPerTick();
 		this.preservesInput = recipe.preservesInput();

@@ -29,9 +29,9 @@ public class ArtisCraftingEmiRecipe implements EmiRecipe {
 		this.recipeType = (ArtisCraftingRecipeType) recipe.getType();
 		this.id = recipe.getId();
 		this.input = EMIHelper.ofIngredientStacks(recipe.getIngredientStacks());
-		this.output = EmiStack.of(recipe.getRawOutput());
+		this.output = EmiStack.of(recipe.getRawResult());
 		this.catalyst = EMIHelper.ofIngredientStack(recipe.getCatalyst());
-		this.catalystCost = recipe.getCatalystCost();
+		this.catalystCost = recipe.getCatalystAmount();
 		
 		this.width = recipe.getWidth();
 		this.height = recipe.getHeight();

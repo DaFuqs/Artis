@@ -10,10 +10,10 @@
      }
    },
    "result": {
-     "item": "minecraft:iron_block",
+     "id": "minecraft:iron_block",
      "count": 2
    },
-   "catalyst": {
+   "catalyst_stack": {
      "item": "minecraft:diamond_pickaxe",
      "recipeViewNbt": "{Enchantments: [{id: \"minecraft:fortune\", lvl:1s}]}",
      "matchbook": {
@@ -29,5 +29,5 @@
        ]
      }
    },
-   "cost": 10
+   "catalyst_amount": 10
  } 

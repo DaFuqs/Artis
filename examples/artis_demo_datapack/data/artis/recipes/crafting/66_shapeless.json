@@ -1,6 +1,6 @@
 {
   "type": "artis:test_table66_shapeless",
-  "ingredients": [
+  "input": [
     {
       "item": "minecraft:stone"
     },
@@ -9,6 +9,6 @@
     }
   ],
   "result": {
-    "item": "minecraft:cobbled_deepslate"
+    "id": "minecraft:cobbled_deepslate"
   }
  } 

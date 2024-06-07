@@ -6,7 +6,7 @@
   },
   "time": 10,
   "result": {
-    "item": "minecraft:leather_boots",
+    "id": "minecraft:leather_boots",
     "nbt": "{Enchantments: [{id: \"minecraft:thorns\", lvl: 1s}]}",
     "count": 2
   }

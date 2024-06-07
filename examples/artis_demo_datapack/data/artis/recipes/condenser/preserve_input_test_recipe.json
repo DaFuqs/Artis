@@ -8,7 +8,7 @@
   "preserves_input": true,
   "time": 360000,
   "result": {
-    "item": "minecraft:snowball",
+    "id": "minecraft:snowball",
     "nbt": "{Enchantments: [{id: \"minecraft:sharpness\", lvl: 1s}]}",
     "count": 1
   }

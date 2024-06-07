@@ -7,8 +7,6 @@ import net.minecraft.entity.player.*;
 import net.minecraft.item.*;
 import net.minecraft.recipe.*;
 import net.minecraft.registry.*;
-import net.minecraft.util.*;
-import net.minecraft.util.collection.*;
 import net.minecraft.world.*;
 
 import java.util.*;
@@ -18,22 +16,17 @@ public abstract class ArtisCraftingRecipeBase implements Recipe<ArtisCraftingInv
 	protected final ArtisCraftingRecipeType type;
 	protected RecipeSerializer<? extends ArtisCraftingRecipe> serializer;
 	
-	protected final Identifier id;
 	protected final String group;
-	protected final DefaultedList<IngredientStack> ingredientStacks;
-	protected final ItemStack output;
+	protected final ItemStack result;
 	protected final IngredientStack catalyst;
-	protected final int catalystCost;
+	protected final int catalystAmount;
 	
-	protected ArtisCraftingRecipeBase(ArtisCraftingRecipeType recipeType, Identifier id, String group, DefaultedList<IngredientStack> ingredientStacks, ItemStack output, IngredientStack catalyst, int catalystCost) {
+	protected ArtisCraftingRecipeBase(ArtisCraftingRecipeType recipeType, String group, IngredientStack catalyst, int catalystAmount, ItemStack result) {
 		this.type = recipeType;
-		
-		this.id = id;
 		this.group = group;
-		this.ingredientStacks = ingredientStacks;
-		this.output = output;
+		this.result = result;
 		this.catalyst = catalyst;
-		this.catalystCost = catalystCost;
+		this.catalystAmount = catalystAmount;
 	}
 	
 	@Override
@@ -62,11 +55,11 @@ public abstract class ArtisCraftingRecipeBase implements Recipe<ArtisCraftingInv
 		if (inventory.shouldCompareCatalyst()) {
 			if (!catalyst.matches(toTest)) return false;
 			if (toTest.isDamageable()) {
-				return toTest.getMaxDamage() - toTest.getDamage() >= catalystCost;
+				return toTest.getMaxDamage() - toTest.getDamage() >= catalystAmount;
 			} else if (toTest.getItem() instanceof SpecialCatalyst specialCatalyst) {
-				return specialCatalyst.matchesCatalyst(toTest, catalystCost);
+				return specialCatalyst.matchesCatalyst(toTest, catalystAmount);
 			} else {
-				return toTest.getCount() >= catalystCost;
+				return toTest.getCount() >= catalystAmount;
 			}
 		}
 		return true;
@@ -74,29 +67,24 @@ public abstract class ArtisCraftingRecipeBase implements Recipe<ArtisCraftingInv
 	
 	@Override
 	public ItemStack craft(ArtisCraftingInventory inventory, RegistryWrapper.WrapperLookup lookup) {
-		return this.output.copy();
+		return this.result.copy();
 	}
 	
 	@Override
 	public ItemStack getResult(RegistryWrapper.WrapperLookup registriesLookup) {
-		return this.output;
+		return this.result;
 	}
 	
 	public IngredientStack getCatalyst() {
 		return catalyst;
 	}
 	
-	public int getCatalystCost() {
-		return catalystCost;
+	public int getCatalystAmount() {
+		return catalystAmount;
 	}
 	
-	public ItemStack getRawOutput() {
-		return this.output;
-	}
-	
-	@Override
-	public List<IngredientStack> getIngredientStacks() {
-		return this.ingredientStacks;
+	public ItemStack getRawResult() {
+		return this.result;
 	}
 	
 	@Override
@@ -111,21 +99,17 @@ public abstract class ArtisCraftingRecipeBase implements Recipe<ArtisCraftingInv
 				catalystInventory.set(i, remainder);
 			} else {
 				if (catalystStack.isDamageable()) {
-					catalystStack.setDamage(catalystStack.getDamage() + getCatalystCost());
+					catalystStack.setDamage(catalystStack.getDamage() + getCatalystAmount());
 					if (catalystStack.getDamage() >= catalystStack.getMaxDamage()) {
 						catalystInventory.set(i, remainder);
 					}
 				} else if (catalystStack.getItem() instanceof SpecialCatalyst specialCatalyst) {
-					specialCatalyst.consumeCatalyst(catalystStack, getCatalystCost());
+					specialCatalyst.consumeCatalyst(catalystStack, getCatalystAmount());
 				} else {
-					catalystStack.decrement(getCatalystCost());
+					catalystStack.decrement(getCatalystAmount());
 				}
 			}
 		}
-	}
-	
-	public Identifier getId() {
-		return this.id;
 	}
 	
 }
